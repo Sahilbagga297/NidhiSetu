@@ -45,7 +45,7 @@ connectDB();
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://nidhi-setu-two.vercel.app'],
+  origin: ['https://nidhi-setu-two.vercel.app','http://localhost:5173'],
   credentials: true
 }));
 
