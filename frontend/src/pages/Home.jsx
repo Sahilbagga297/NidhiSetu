@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Shield, 
-  Users, 
-  CheckCircle, 
-  Eye, 
-  Database, 
-  CreditCard, 
-  ArrowRight, 
-  FileCheck, 
-  Lock, 
+import {
+  Shield,
+  Users,
+  CheckCircle,
+  Eye,
+  Database,
+  CreditCard,
+  ArrowRight,
+  FileCheck,
+  Lock,
   Award,
   ChevronLeft,
   ChevronRight,
@@ -17,7 +17,7 @@ import {
   Globe,
   UserCheck
 } from 'lucide-react';
-
+import home from '../../public/home.jpg';
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
@@ -27,7 +27,7 @@ const Home = () => {
     {
       title: "Pradhan Mantri Pension Yojana",
       description: "Guaranteed pension for senior citizens with face recognition security",
-      image: "../../public/p1.jpg",
+      image: "https://www.shutterstock.com/image-photo/deposit-protection-bank-insurance-financial-260nw-2317213089.jpg",
       beneficiaries: "2.3M+"
     },
     {
@@ -99,7 +99,7 @@ const Home = () => {
     }, observerOptions);
 
     document.querySelectorAll('[data-section]').forEach(el => observer.observe(el));
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -118,25 +118,25 @@ const Home = () => {
                 <Shield className="w-4 h-4 mr-2" />
                 Secured by Advanced Biometric Technology
               </div>
-              
+
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
                 Direct Government
                 <span className="block text-yellow-400">Benefits Platform</span>
               </h1>
-              
+
               <p className="text-xl text-blue-100 leading-relaxed">
                 Experience transparent, secure, and efficient distribution of government funds with cutting-edge face recognition technology and fraud prevention systems.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
-                <button 
+                <button
                   onClick={() => navigate('/dashboard')}
                   className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
                 >
                   Access Your Benefits
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
-                <button 
+                <button
                   onClick={() => navigate('/about')}
                   className="border-2 border-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300"
                 >
@@ -144,12 +144,12 @@ const Home = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-3xl p-8 border border-white border-opacity-20">
-                <img 
-                  src="../../public/WhatsApp Image 2025-09-08 at 18.41.47_bc1ed8bb.jpg" 
-                  alt="Government Digital Services" 
+                <img
+                  src={home}
+                  alt="Government Digital Services"
                   className="w-full h-80 object-cover rounded-2xl shadow-2xl"
                 />
                 <div className="mt-6 grid grid-cols-2 gap-4">
@@ -247,7 +247,7 @@ const Home = () => {
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
               <div className="grid lg:grid-cols-2">
                 <div className="relative h-80 lg:h-auto">
-                  <img 
+                  <img
                     src={schemes[currentSlide].image}
                     alt={schemes[currentSlide].title}
                     className="w-full h-full object-cover"
@@ -256,7 +256,7 @@ const Home = () => {
                     {schemes[currentSlide].beneficiaries} Beneficiaries
                   </div>
                 </div>
-                
+
                 <div className="p-12 flex flex-col justify-center">
                   <div className="mb-6">
                     <Award className="w-12 h-12 text-blue-600 mb-4" />
@@ -267,24 +267,23 @@ const Home = () => {
                       {schemes[currentSlide].description}
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
-                    <button 
+                    <button
                       onClick={() => navigate('/about')}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center"
                     >
                       Learn More
                       <ArrowRight className="ml-2 w-4 h-4" />
                     </button>
-                    
+
                     <div className="flex space-x-2">
                       {schemes.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentSlide(index)}
-                          className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                            index === currentSlide ? 'bg-blue-600' : 'bg-gray-300'
-                          }`}
+                          className={`w-3 h-3 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-blue-600' : 'bg-gray-300'
+                            }`}
                         />
                       ))}
                     </div>
@@ -292,14 +291,14 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            
+
             <button
               onClick={prevSlide}
               className="absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
             >
               <ChevronLeft className="w-6 h-6 text-gray-600" />
             </button>
-            
+
             <button
               onClick={nextSlide}
               className="absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
@@ -363,9 +362,9 @@ const Home = () => {
           <p className="text-xl text-blue-100 mb-8 leading-relaxed">
             Join millions of citizens who trust our secure platform for transparent and efficient government benefit distribution.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
+            <button
               onClick={() => navigate('/verification')}
               className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
             >
