@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Eye, 
-  EyeOff, 
-  Shield, 
-  User, 
-  Lock, 
+import {
+  Eye,
+  EyeOff,
+  Shield,
+  User,
+  Lock,
   Mail,
   ArrowRight,
   Zap,
@@ -28,12 +28,12 @@ import {
 const UnifiedAuth = () => {
   const [userType, setUserType] = useState('normal'); // 'normal' or 'nominee'
   const [isLogin, setIsLogin] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     // Login fields
     email: '',
     password: '',
-    
+
     // Normal user signup fields
     name: '',
     confirmPassword: '',
@@ -45,26 +45,27 @@ const UnifiedAuth = () => {
       country: 'India'
     },
     aadharNumber: '',
+    ppoNumber: '',
     phoneNumber: '',
     dateOfBirth: '',
     gender: '',
-    
+
     // Nominee-specific fields
     relationWithUser: '',
     userAadharNumber: ''
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
       setFormData({
@@ -88,7 +89,7 @@ const UnifiedAuth = () => {
     setLoading(true);
 
     const result = await login(formData.email, formData.password, userType);
-    
+
     if (result.success) {
       // Navigate based on user type
       if (userType === 'nominee') {
@@ -99,7 +100,7 @@ const UnifiedAuth = () => {
     } else {
       setError(result.message);
     }
-    
+
     setLoading(false);
   };
 
@@ -125,6 +126,12 @@ const UnifiedAuth = () => {
       return;
     }
 
+    // Validate PPO number format for normal users
+    if (userType === 'normal' && !/^\d{12}$/.test(formData.ppoNumber)) {
+      setError('PPO number must be exactly 12 digits');
+      return;
+    }
+
     // Validate user Aadhar number format for nominees
     if (userType === 'nominee' && !/^\d{12}$/.test(formData.userAadharNumber)) {
       setError('User Aadhar number must be exactly 12 digits');
@@ -144,10 +151,14 @@ const UnifiedAuth = () => {
     }
 
     // Validate required fields based on user type
-    const requiredFields = ['name', 'email', 'password', 'address.street', 'address.city', 
-                           'address.state', 'address.pincode', 'aadharNumber', 'phoneNumber', 
-                           'dateOfBirth', 'gender'];
-    
+    const requiredFields = ['name', 'email', 'password', 'address.street', 'address.city',
+      'address.state', 'address.pincode', 'aadharNumber', 'phoneNumber',
+      'dateOfBirth', 'gender'];
+
+    if (userType === 'normal') {
+      requiredFields.push('ppoNumber');
+    }
+
     if (userType === 'nominee') {
       requiredFields.push('relationWithUser', 'userAadharNumber');
     }
@@ -170,7 +181,7 @@ const UnifiedAuth = () => {
     // Remove confirmPassword from the data sent to backend
     const { confirmPassword, ...signupData } = formData;
     const result = await signup(signupData, userType);
-    
+
     if (result.success) {
       // Navigate based on user type
       if (userType === 'nominee') {
@@ -181,7 +192,7 @@ const UnifiedAuth = () => {
     } else {
       setError(result.message);
     }
-    
+
     setLoading(false);
   };
 
@@ -201,6 +212,7 @@ const UnifiedAuth = () => {
         country: 'India'
       },
       aadharNumber: '',
+      ppoNumber: '',
       phoneNumber: '',
       dateOfBirth: '',
       gender: '',
@@ -230,22 +242,20 @@ const UnifiedAuth = () => {
             <div className="bg-gray-100 rounded-full p-1 flex">
               <button
                 onClick={() => setUserType('normal')}
-                className={`px-8 py-3 rounded-full text-sm font-medium transition-all duration-300 flex items-center ${
-                  userType === 'normal'
-                    ? 'bg-blue-600 text-white shadow-lg' 
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
+                className={`px-8 py-3 rounded-full text-sm font-medium transition-all duration-300 flex items-center ${userType === 'normal'
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:text-gray-800'
+                  }`}
               >
                 <Building2 className="w-4 h-4 mr-2" />
                 Normal User
               </button>
               <button
                 onClick={() => setUserType('nominee')}
-                className={`px-8 py-3 rounded-full text-sm font-medium transition-all duration-300 flex items-center ${
-                  userType === 'nominee'
-                    ? 'bg-green-600 text-white shadow-lg' 
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
+                className={`px-8 py-3 rounded-full text-sm font-medium transition-all duration-300 flex items-center ${userType === 'nominee'
+                  ? 'bg-green-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:text-gray-800'
+                  }`}
               >
                 <Users className="w-4 h-4 mr-2" />
                 Nominee
@@ -258,21 +268,19 @@ const UnifiedAuth = () => {
             <div className="bg-gray-100 rounded-full p-1 flex">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isLogin 
-                    ? `${userType === 'normal' ? 'bg-blue-600' : 'bg-green-600'} text-white shadow-lg` 
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isLogin
+                  ? `${userType === 'normal' ? 'bg-blue-600' : 'bg-green-600'} text-white shadow-lg`
+                  : 'text-gray-600 hover:text-gray-800'
+                  }`}
               >
                 Login
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  !isLogin 
-                    ? `${userType === 'normal' ? 'bg-blue-600' : 'bg-green-600'} text-white shadow-lg` 
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${!isLogin
+                  ? `${userType === 'normal' ? 'bg-blue-600' : 'bg-green-600'} text-white shadow-lg`
+                  : 'text-gray-600 hover:text-gray-800'
+                  }`}
               >
                 Register
               </button>
@@ -281,25 +289,23 @@ const UnifiedAuth = () => {
 
           {/* Form Container with Slider Effect */}
           <div className="relative overflow-hidden">
-            <div 
-              className={`flex transition-transform duration-500 ease-in-out ${
-                isLogin ? 'translate-x-0' : '-translate-x-full'
-              }`}
+            <div
+              className={`flex transition-transform duration-500 ease-in-out ${isLogin ? 'translate-x-0' : '-translate-x-full'
+                }`}
             >
               {/* Login Form */}
               <div className="w-full flex-shrink-0">
                 <div className="text-center mb-8">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
-                    userType === 'normal' ? 'bg-blue-100' : 'bg-green-100'
-                  }`}>
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${userType === 'normal' ? 'bg-blue-100' : 'bg-green-100'
+                    }`}>
                     <Shield className={`w-8 h-8 ${userType === 'normal' ? 'text-blue-600' : 'text-green-600'}`} />
                   </div>
                   <h2 className="text-3xl font-bold text-gray-800 mb-2">
                     {userType === 'normal' ? 'User Login' : 'Nominee Login'}
                   </h2>
                   <p className="text-gray-600">
-                    {userType === 'normal' 
-                      ? 'Access your government benefits account' 
+                    {userType === 'normal'
+                      ? 'Access your government benefits account'
                       : 'Access your nominee account'
                     }
                   </p>
@@ -370,11 +376,10 @@ const UnifiedAuth = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${
-                      userType === 'normal' 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
-                        : 'bg-green-600 hover:bg-green-700'
-                    }`}
+                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${userType === 'normal'
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-green-600 hover:bg-green-700'
+                      }`}
                   >
                     {loading ? (
                       <>
@@ -394,9 +399,8 @@ const UnifiedAuth = () => {
               {/* Signup Form */}
               <div className="w-full flex-shrink-0">
                 <div className="text-center mb-8">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
-                    userType === 'normal' ? 'bg-blue-100' : 'bg-green-100'
-                  }`}>
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${userType === 'normal' ? 'bg-blue-100' : 'bg-green-100'
+                    }`}>
                     {userType === 'normal' ? (
                       <UserPlus className="w-8 h-8 text-blue-600" />
                     ) : (
@@ -407,8 +411,8 @@ const UnifiedAuth = () => {
                     {userType === 'normal' ? 'User Registration' : 'Nominee Registration'}
                   </h2>
                   <p className="text-gray-600">
-                    {userType === 'normal' 
-                      ? 'Create your government benefits account' 
+                    {userType === 'normal'
+                      ? 'Create your government benefits account'
                       : 'Register as a nominee for existing user'
                     }
                   </p>
@@ -535,7 +539,7 @@ const UnifiedAuth = () => {
                         <Users className="w-5 h-5 mr-2 text-green-600" />
                         Nominee Information
                       </h3>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label htmlFor="relationWithUser" className="block text-sm font-medium text-gray-700 mb-2">
@@ -560,7 +564,7 @@ const UnifiedAuth = () => {
                             <option value="Other">Other</option>
                           </select>
                         </div>
-                        
+
                         <div>
                           <label htmlFor="userAadharNumber" className="block text-sm font-medium text-gray-700 mb-2">
                             User's Aadhar Number
@@ -592,7 +596,7 @@ const UnifiedAuth = () => {
                       <UserCheck className="w-5 h-5 mr-2 text-blue-600" />
                       Personal Information
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="aadharNumber" className="block text-sm font-medium text-gray-700 mb-2">
@@ -615,7 +619,32 @@ const UnifiedAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
+                      {/* PPO Number - Only for Normal Users */}
+                      {userType === 'normal' && (
+                        <div>
+                          <label htmlFor="ppoNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                            PPO Number
+                          </label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <CreditCard className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                              id="ppoNumber"
+                              name="ppoNumber"
+                              type="text"
+                              required
+                              maxLength="12"
+                              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                              placeholder="Enter 12-digit PPO number"
+                              value={formData.ppoNumber}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       <div>
                         <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
                           Phone Number
@@ -637,7 +666,7 @@ const UnifiedAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
                           Date of Birth
@@ -657,7 +686,7 @@ const UnifiedAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
                           Gender
@@ -685,7 +714,7 @@ const UnifiedAuth = () => {
                       <MapPin className="w-5 h-5 mr-2 text-blue-600" />
                       Address Information
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="md:col-span-2">
                         <label htmlFor="address.street" className="block text-sm font-medium text-gray-700 mb-2">
@@ -702,7 +731,7 @@ const UnifiedAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.city" className="block text-sm font-medium text-gray-700 mb-2">
                           City
@@ -718,7 +747,7 @@ const UnifiedAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.state" className="block text-sm font-medium text-gray-700 mb-2">
                           State
@@ -734,7 +763,7 @@ const UnifiedAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.pincode" className="block text-sm font-medium text-gray-700 mb-2">
                           Pincode
@@ -751,7 +780,7 @@ const UnifiedAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.country" className="block text-sm font-medium text-gray-700 mb-2">
                           Country
@@ -779,11 +808,10 @@ const UnifiedAuth = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${
-                      userType === 'normal' 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
-                        : 'bg-green-600 hover:bg-green-700'
-                    }`}
+                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${userType === 'normal'
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-green-600 hover:bg-green-700'
+                      }`}
                   >
                     {loading ? (
                       <>
@@ -811,7 +839,7 @@ const UnifiedAuth = () => {
                 {userType === 'normal' ? 'Government Benefits Portal' : 'Nominee Benefits Portal'}
               </h3>
               <p className="text-blue-100 leading-relaxed">
-                {userType === 'normal' 
+                {userType === 'normal'
                   ? 'Secure access to all government schemes and benefits with advanced face recognition technology and fraud prevention systems.'
                   : 'Secure access to government benefits as a nominee with advanced verification systems and fraud prevention.'
                 }
@@ -826,7 +854,7 @@ const UnifiedAuth = () => {
                 <div>
                   <h4 className="font-semibold">Advanced Security</h4>
                   <p className="text-blue-200 text-sm">
-                    {userType === 'normal' 
+                    {userType === 'normal'
                       ? 'Face recognition and biometric authentication'
                       : 'Advanced security with relation verification and Aadhar matching'
                     }
@@ -841,7 +869,7 @@ const UnifiedAuth = () => {
                 <div>
                   <h4 className="font-semibold">Instant Access</h4>
                   <p className="text-blue-200 text-sm">
-                    {userType === 'normal' 
+                    {userType === 'normal'
                       ? 'Quick verification and benefit distribution'
                       : 'Quick verification and immediate access to nominee benefits'
                     }
