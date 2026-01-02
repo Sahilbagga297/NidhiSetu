@@ -59,7 +59,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   // Check if user is already enrolled
   const checkEnrollmentStatus = async () => {
     try {
-      const response = await fetch(`/api/faces/enrollment-status/${user.id}`);
+      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setIsEnrolled(data.isEnrolled);
