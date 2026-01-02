@@ -31,7 +31,7 @@ const NomineeVerification = () => {
     setMessage('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/nominees/verify`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const NomineeVerification = () => {
       if (data.success) {
         setMessage(data.message);
         setNomineeDetails(data.nominee);
-        
+
         // Redirect after 3 seconds
         setTimeout(() => {
           navigate('/');
@@ -119,11 +119,10 @@ const NomineeVerification = () => {
           )}
 
           {message && (
-            <div className={`mb-4 p-4 rounded-md ${
-              action === 'confirm' 
-                ? 'bg-green-50 border border-green-200' 
+            <div className={`mb-4 p-4 rounded-md ${action === 'confirm'
+                ? 'bg-green-50 border border-green-200'
                 : 'bg-yellow-50 border border-yellow-200'
-            }`}>
+              }`}>
               <div className="flex">
                 <div className="flex-shrink-0">
                   {action === 'confirm' ? (
@@ -137,14 +136,12 @@ const NomineeVerification = () => {
                   )}
                 </div>
                 <div className="ml-3">
-                  <h3 className={`text-sm font-medium ${
-                    action === 'confirm' ? 'text-green-800' : 'text-yellow-800'
-                  }`}>
+                  <h3 className={`text-sm font-medium ${action === 'confirm' ? 'text-green-800' : 'text-yellow-800'
+                    }`}>
                     {action === 'confirm' ? 'Success' : 'Nominee Rejected'}
                   </h3>
-                  <div className={`mt-2 text-sm ${
-                    action === 'confirm' ? 'text-green-700' : 'text-yellow-700'
-                  }`}>
+                  <div className={`mt-2 text-sm ${action === 'confirm' ? 'text-green-700' : 'text-yellow-700'
+                    }`}>
                     {message}
                   </div>
                 </div>

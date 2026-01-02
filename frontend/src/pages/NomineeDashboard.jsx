@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { 
-  User, 
-  Shield, 
-  Upload, 
-  FileText, 
-  Heart, 
+import {
+  User,
+  Shield,
+  Upload,
+  FileText,
+  Heart,
   AlertTriangle,
   CheckCircle,
   Clock,
@@ -47,7 +47,7 @@ const NomineeDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/nominees/verification-status`,
+        `${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verification-status`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -79,13 +79,13 @@ const NomineeDashboard = () => {
 
         // Fetch both profile and verification status
         const [profileResponse, verificationResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/nominees/profile', {
+          axios.get('https://nidhisetu.onrender.com/api/nominees/profile', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }),
           axios.get(
-            `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/nominees/verification-status`,
+            `${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verification-status`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -93,7 +93,7 @@ const NomineeDashboard = () => {
             }
           )
         ]);
-        
+
         if (profileResponse.data.success) {
           const nominee = profileResponse.data.nominee;
           setNomineeDetails({
@@ -128,7 +128,7 @@ const NomineeDashboard = () => {
           if (nominee.documents && nominee.documents.length > 0) {
             const deathCert = nominee.documents.find(doc => doc.type === 'Death Certificate');
             const medicalDocs = nominee.documents.filter(doc => doc.type === 'Medical Document');
-            
+
             // Transform documents to have consistent field names
             const transformDocument = (doc) => ({
               id: doc._id,
@@ -138,7 +138,7 @@ const NomineeDashboard = () => {
               uploadDate: doc.uploadDate,
               status: doc.status
             });
-            
+
             setUploadedFiles({
               deathCertificate: deathCert ? transformDocument(deathCert) : null,
               medicalDocuments: medicalDocs ? medicalDocs.map(transformDocument) : []
@@ -178,7 +178,7 @@ const NomineeDashboard = () => {
     const file = event.target.files[0];
     console.log('File selected:', file);
     console.log('Upload type:', type);
-    
+
     if (!file) {
       console.log('No file selected');
       setError('No file selected. Please choose a file to upload.');
@@ -202,7 +202,7 @@ const NomineeDashboard = () => {
     setUploading(true);
     setError('');
     setSuccess('');
-    
+
     try {
       // Create FormData for file upload
       const formData = new FormData();
@@ -212,7 +212,7 @@ const NomineeDashboard = () => {
       // Upload file to backend
       const token = localStorage.getItem('token');
       console.log('🚀 Sending file to backend:', { type, fileName: file.name, fileSize: file.size });
-      const response = await axios.post('http://localhost:5000/api/nominees/documents/upload', formData, {
+      const response = await axios.post('https://nidhisetu.onrender.com/api/nominees/documents/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -222,7 +222,7 @@ const NomineeDashboard = () => {
 
       if (response.data.success) {
         const uploadedDoc = response.data.document;
-        
+
         if (type === 'deathCertificate') {
           setUploadedFiles(prev => ({
             ...prev,
@@ -253,14 +253,14 @@ const NomineeDashboard = () => {
           }));
           setSuccess('Medical document uploaded successfully! Notification emails have been sent to both the administration and the linked user.');
         }
-        
+
         // Clear success message after 5 seconds
         setTimeout(() => setSuccess(''), 5000);
       }
     } catch (error) {
       console.error('File upload error:', error);
       console.error('Error details:', error.response?.data);
-      
+
       if (error.response?.status === 401) {
         setError('Session expired. Please login again.');
         setTimeout(() => {
@@ -293,7 +293,7 @@ const NomineeDashboard = () => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete this ${type === 'deathCertificate' ? 'death certificate' : 'medical document'}? This action cannot be undone.`
     );
-    
+
     if (!confirmDelete) {
       return;
     }
@@ -310,14 +310,14 @@ const NomineeDashboard = () => {
       }
 
       console.log('Deleting document:', { type, fileId });
-      
+
       // Call API to delete document
-      const response = await axios.delete(`http://localhost:5000/api/nominees/documents/${fileId}`, {
+      const response = await axios.delete(`https://nidhisetu.onrender.com/api/nominees/documents/${fileId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.data.success) {
         // Update local state
         if (type === 'deathCertificate') {
@@ -331,7 +331,7 @@ const NomineeDashboard = () => {
             medicalDocuments: prev.medicalDocuments.filter(file => file.id !== fileId)
           }));
         }
-        
+
         setSuccess('Document deleted successfully');
         setTimeout(() => setSuccess(''), 3000);
       } else {
@@ -344,7 +344,7 @@ const NomineeDashboard = () => {
         response: error.response?.data,
         status: error.response?.status
       });
-      
+
       if (error.response?.status === 401) {
         setError('Session expired. Please login again.');
         setTimeout(() => {
@@ -394,7 +394,7 @@ const NomineeDashboard = () => {
   const handleDrop = (e, type) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -439,8 +439,8 @@ const NomineeDashboard = () => {
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Dashboard</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
             Retry
@@ -474,22 +474,20 @@ const NomineeDashboard = () => {
               <p className="text-gray-600 mt-1">Manage your nominee account and linked user information</p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                nomineeDetails.status === 'Active' 
-                  ? 'bg-green-100 text-green-800' 
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${nomineeDetails.status === 'Active'
+                  ? 'bg-green-100 text-green-800'
                   : 'bg-red-100 text-red-800'
-              }`}>
+                }`}>
                 <CheckCircle className="w-4 h-4 inline mr-1" />
                 {nomineeDetails.status} Nominee
               </div>
               {nomineeDetails.verificationStatus && (
-                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  nomineeDetails.verificationStatus === 'Verified' 
-                    ? 'bg-blue-100 text-blue-800' 
+                <div className={`px-3 py-1 rounded-full text-sm font-medium ${nomineeDetails.verificationStatus === 'Verified'
+                    ? 'bg-blue-100 text-blue-800'
                     : nomineeDetails.verificationStatus === 'Pending'
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-red-100 text-red-800'
-                }`}>
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
                   {nomineeDetails.verificationStatus}
                 </div>
               )}
@@ -556,13 +554,12 @@ const NomineeDashboard = () => {
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className={`p-4 rounded-lg border-2 ${
-                      verificationStatus.verificationStatus === 'Verified' 
-                        ? 'border-green-200 bg-green-50' 
+                    <div className={`p-4 rounded-lg border-2 ${verificationStatus.verificationStatus === 'Verified'
+                        ? 'border-green-200 bg-green-50'
                         : verificationStatus.verificationStatus === 'Pending'
-                        ? 'border-yellow-200 bg-yellow-50'
-                        : 'border-red-200 bg-red-50'
-                    }`}>
+                          ? 'border-yellow-200 bg-yellow-50'
+                          : 'border-red-200 bg-red-50'
+                      }`}>
                       <div className="flex items-center">
                         {verificationStatus.verificationStatus === 'Verified' ? (
                           <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
@@ -577,11 +574,10 @@ const NomineeDashboard = () => {
                       </div>
                     </div>
 
-                    <div className={`p-4 rounded-lg border-2 ${
-                      verificationStatus.userConfirmed 
-                        ? 'border-green-200 bg-green-50' 
+                    <div className={`p-4 rounded-lg border-2 ${verificationStatus.userConfirmed
+                        ? 'border-green-200 bg-green-50'
                         : 'border-orange-200 bg-orange-50'
-                    }`}>
+                      }`}>
                       <div className="flex items-center">
                         {verificationStatus.userConfirmed ? (
                           <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
@@ -632,8 +628,8 @@ const NomineeDashboard = () => {
                           <p><strong>Caller ID:</strong> +12294598201</p>
                           <p><strong>Purpose:</strong> Nominee verification call</p>
                           <p className="text-blue-700 mt-2">
-                            <em>An automated verification call has been initiated to the linked user. 
-                            They will receive a call to confirm your nomination status.</em>
+                            <em>An automated verification call has been initiated to the linked user.
+                              They will receive a call to confirm your nomination status.</em>
                           </p>
                         </div>
                       </div>
@@ -647,7 +643,7 @@ const NomineeDashboard = () => {
                         <div>
                           <h4 className="font-medium text-blue-900 mb-1">Verification Email Sent</h4>
                           <p className="text-sm text-blue-800">
-                            A verification email has been sent to the user you're nominating for. 
+                            A verification email has been sent to the user you're nominating for.
                             They need to confirm your nomination before you can access their benefits information.
                           </p>
                           <p className="text-sm text-blue-800 mt-2">
@@ -670,22 +666,20 @@ const NomineeDashboard = () => {
                 <nav className="flex space-x-8 px-6">
                   <button
                     onClick={() => setActiveTab('overview')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                      activeTab === 'overview'
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'overview'
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     <Users className="w-4 h-4 inline mr-2" />
                     Linked User Details
                   </button>
                   <button
                     onClick={() => setActiveTab('documents')}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                      activeTab === 'documents'
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'documents'
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     <FileText className="w-4 h-4 inline mr-2" />
                     Document Upload
@@ -703,7 +697,7 @@ const NomineeDashboard = () => {
                       <div className="ml-3">
                         <h3 className="text-xl font-semibold text-gray-900">Linked User Information</h3>
                         <p className="text-gray-600">
-                          {linkedUserDetails 
+                          {linkedUserDetails
                             ? `User details linked via Aadhar: ${linkedUserDetails.aadharNumber}`
                             : 'No linked user data available'
                           }
@@ -716,88 +710,85 @@ const NomineeDashboard = () => {
                         <Building2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No Linked User Data</h3>
                         <p className="text-gray-600">
-                          The linked user information is not available. This might be because the user 
+                          The linked user information is not available. This might be because the user
                           has not been verified or there was an issue with the Aadhar verification.
                         </p>
                       </div>
                     ) : (
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Full Name</label>
-                          <p className="text-gray-900 font-medium">{linkedUserDetails.name}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Full Name</label>
+                            <p className="text-gray-900 font-medium">{linkedUserDetails.name}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Aadhar Number</label>
+                            <p className="text-gray-900 font-mono">{linkedUserDetails.aadharNumber}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Phone Number</label>
+                            <p className="text-gray-900">{linkedUserDetails.phoneNumber}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Email</label>
+                            <p className="text-gray-900">{linkedUserDetails.email}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Date of Birth</label>
+                            <p className="text-gray-900">{formatDate(linkedUserDetails.dateOfBirth)}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Gender</label>
+                            <p className="text-gray-900">{linkedUserDetails.gender}</p>
+                          </div>
                         </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Aadhar Number</label>
-                          <p className="text-gray-900 font-mono">{linkedUserDetails.aadharNumber}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Phone Number</label>
-                          <p className="text-gray-900">{linkedUserDetails.phoneNumber}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Email</label>
-                          <p className="text-gray-900">{linkedUserDetails.email}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Date of Birth</label>
-                          <p className="text-gray-900">{formatDate(linkedUserDetails.dateOfBirth)}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Gender</label>
-                          <p className="text-gray-900">{linkedUserDetails.gender}</p>
-                        </div>
-                      </div>
 
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Address</label>
-                          <div className="text-gray-900">
-                            {linkedUserDetails.address ? (
-                              <>
-                                <p>{linkedUserDetails.address.street || 'N/A'}</p>
-                                <p>{linkedUserDetails.address.city || 'N/A'}, {linkedUserDetails.address.state || 'N/A'}</p>
-                                <p>{linkedUserDetails.address.pincode || 'N/A'}, {linkedUserDetails.address.country || 'N/A'}</p>
-                              </>
-                            ) : (
-                              <p>Address not available</p>
-                            )}
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Address</label>
+                            <div className="text-gray-900">
+                              {linkedUserDetails.address ? (
+                                <>
+                                  <p>{linkedUserDetails.address.street || 'N/A'}</p>
+                                  <p>{linkedUserDetails.address.city || 'N/A'}, {linkedUserDetails.address.state || 'N/A'}</p>
+                                  <p>{linkedUserDetails.address.pincode || 'N/A'}, {linkedUserDetails.address.country || 'N/A'}</p>
+                                </>
+                              ) : (
+                                <p>Address not available</p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Pension Status</label>
-                          <div className="flex items-center">
-                            <div className={`w-2 h-2 rounded-full mr-2 ${
-                              linkedUserDetails.pensionStatus === 'Active' ? 'bg-green-500' : 'bg-red-500'
-                            }`}></div>
-                            <span className="text-gray-900">{linkedUserDetails.pensionStatus}</span>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Pension Status</label>
+                            <div className="flex items-center">
+                              <div className={`w-2 h-2 rounded-full mr-2 ${linkedUserDetails.pensionStatus === 'Active' ? 'bg-green-500' : 'bg-red-500'
+                                }`}></div>
+                              <span className="text-gray-900">{linkedUserDetails.pensionStatus}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Last Login</label>
-                          <p className="text-gray-900">{formatDate(linkedUserDetails.lastLogin)}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Medical Status</label>
-                          <div className="flex items-center">
-                            <Heart className={`w-4 h-4 mr-2 ${
-                              linkedUserDetails.medicalStatus === 'Unknown' ? 'text-gray-400' : 'text-red-500'
-                            }`} />
-                            <span className="text-gray-900">{linkedUserDetails.medicalStatus}</span>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Last Login</label>
+                            <p className="text-gray-900">{formatDate(linkedUserDetails.lastLogin)}</p>
                           </div>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Death Status</label>
-                          <div className="flex items-center">
-                            <div className={`w-2 h-2 rounded-full mr-2 ${
-                              linkedUserDetails.deathStatus === 'Alive' ? 'bg-green-500' : 'bg-red-500'
-                            }`}></div>
-                            <span className="text-gray-900">{linkedUserDetails.deathStatus}</span>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Medical Status</label>
+                            <div className="flex items-center">
+                              <Heart className={`w-4 h-4 mr-2 ${linkedUserDetails.medicalStatus === 'Unknown' ? 'text-gray-400' : 'text-red-500'
+                                }`} />
+                              <span className="text-gray-900">{linkedUserDetails.medicalStatus}</span>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Death Status</label>
+                            <div className="flex items-center">
+                              <div className={`w-2 h-2 rounded-full mr-2 ${linkedUserDetails.deathStatus === 'Alive' ? 'bg-green-500' : 'bg-red-500'
+                                }`}></div>
+                              <span className="text-gray-900">{linkedUserDetails.deathStatus}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
                     )}
                   </div>
                 )}
@@ -838,7 +829,7 @@ const NomineeDashboard = () => {
 
                     {/* Death Certificate Upload */}
                     <div className="mb-8">
-                      <div 
+                      <div
                         className="bg-red-50 border border-red-200 hover:border-red-300 hover:bg-red-100 rounded-xl p-6 transition-all duration-200"
                       >
                         <div className="flex items-center mb-4">
@@ -848,10 +839,10 @@ const NomineeDashboard = () => {
                           <h4 className="text-lg font-semibold text-red-900 ml-3">Death Certificate Upload</h4>
                         </div>
                         <p className="text-red-700 mb-4">
-                          Upload the death certificate to declare that the linked user has passed away. 
+                          Upload the death certificate to declare that the linked user has passed away.
                           This will transfer all pension benefits to you as the nominee.
                         </p>
-                        
+
                         {uploadedFiles.deathCertificate ? (
                           <div className="bg-white border border-red-200 rounded-lg p-4">
                             <div className="flex items-center justify-between">
@@ -860,7 +851,7 @@ const NomineeDashboard = () => {
                                 <div>
                                   <p className="font-medium text-gray-900">{uploadedFiles.deathCertificate.name}</p>
                                   <p className="text-sm text-gray-500">
-                                    {formatFileSize(uploadedFiles.deathCertificate.size)} • 
+                                    {formatFileSize(uploadedFiles.deathCertificate.size)} •
                                     Uploaded on {formatDate(uploadedFiles.deathCertificate.uploadDate)}
                                   </p>
                                 </div>
@@ -869,7 +860,7 @@ const NomineeDashboard = () => {
                                 <button className="text-blue-600 hover:text-blue-800">
                                   <Eye className="w-4 h-4" />
                                 </button>
-                                <button 
+                                <button
                                   onClick={() => removeFile('deathCertificate', uploadedFiles.deathCertificate.id)}
                                   disabled={deleting}
                                   className="text-red-600 hover:text-red-800 disabled:text-red-400 disabled:cursor-not-allowed"
@@ -885,7 +876,7 @@ const NomineeDashboard = () => {
                             </div>
                           </div>
                         ) : (
-                          <div 
+                          <div
                             className="border-2 border-dashed border-red-300 hover:border-red-400 hover:bg-red-50 rounded-lg p-6 text-center transition-all duration-200"
                             onDragOver={handleDragOver}
                             onDragEnter={handleDragEnter}
@@ -934,7 +925,7 @@ const NomineeDashboard = () => {
 
                     {/* Medical Documents Upload */}
                     <div className="mb-8">
-                      <div 
+                      <div
                         className="bg-yellow-50 border border-yellow-200 hover:border-yellow-300 hover:bg-yellow-100 rounded-xl p-6 transition-all duration-200"
                       >
                         <div className="flex items-center mb-4">
@@ -944,10 +935,10 @@ const NomineeDashboard = () => {
                           <h4 className="text-lg font-semibold text-yellow-900 ml-3">Medical Documents Upload</h4>
                         </div>
                         <p className="text-yellow-700 mb-4">
-                          Upload medical documents to declare that the linked user is not well and 
+                          Upload medical documents to declare that the linked user is not well and
                           unable to access the portal for pension management.
                         </p>
-                        
+
                         <div className="space-y-4">
                           {uploadedFiles.medicalDocuments.map((file) => (
                             <div key={file.id} className="bg-white border border-yellow-200 rounded-lg p-4">
@@ -957,7 +948,7 @@ const NomineeDashboard = () => {
                                   <div>
                                     <p className="font-medium text-gray-900">{file.name}</p>
                                     <p className="text-sm text-gray-500">
-                                      {formatFileSize(file.size)} • 
+                                      {formatFileSize(file.size)} •
                                       Uploaded on {formatDate(file.uploadDate)}
                                     </p>
                                   </div>
@@ -966,7 +957,7 @@ const NomineeDashboard = () => {
                                   <button className="text-blue-600 hover:text-blue-800">
                                     <Eye className="w-4 h-4" />
                                   </button>
-                                  <button 
+                                  <button
                                     onClick={() => removeFile('medicalDocuments', file.id)}
                                     disabled={deleting}
                                     className="text-red-600 hover:text-red-800 disabled:text-red-400 disabled:cursor-not-allowed"
@@ -982,8 +973,8 @@ const NomineeDashboard = () => {
                               </div>
                             </div>
                           ))}
-                          
-                          <div 
+
+                          <div
                             className="border-2 border-dashed border-yellow-300 hover:border-yellow-400 hover:bg-yellow-50 rounded-lg p-6 text-center transition-all duration-200"
                             onDragOver={handleDragOver}
                             onDragEnter={handleDragEnter}

@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Square, RotateCcw, CheckCircle, AlertTriangle, Play, Pause, UserPlus, Shield, ArrowLeft } from 'lucide-react';
 import * as faceapi from 'face-api.js';
 
-const BiometricAuth = ({ 
+const BiometricAuth = ({
   mode = 'enroll', // 'enroll' or 'verify'
-  onComplete, 
-  onCancel, 
+  onComplete,
+  onCancel,
   userId,
-  userEmail 
+  userEmail
 }) => {
   const [isActive, setIsActive] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('idle');
@@ -17,7 +17,7 @@ const BiometricAuth = ({
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState('');
   const [error, setError] = useState('');
-  
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const detectionIntervalRef = useRef(null);
@@ -27,7 +27,7 @@ const BiometricAuth = ({
     if (userId) {
       checkEnrollmentStatus();
     }
-    
+
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -41,11 +41,11 @@ const BiometricAuth = ({
   // Check if user is already enrolled
   const checkEnrollmentStatus = async () => {
     if (!userId) return;
-    
+
     try {
       console.log('🔍 Checking enrollment status for:', userId);
-      const response = await fetch(`http://localhost:5000/api/faces/enrollment-status/${userId}`);
-      
+      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${userId}`);
+
       if (response.ok) {
         const data = await response.json();
         console.log('✅ Enrollment status:', data.isEnrolled);
@@ -64,12 +64,12 @@ const BiometricAuth = ({
     try {
       console.log('Loading face-api.js models...');
       console.log('Available models:', faceapi.nets);
-      
+
       // Check if faceapi is properly loaded
       if (!faceapi || !faceapi.nets) {
         throw new Error('face-api.js not properly loaded');
       }
-      
+
       // Load models with retry mechanism
       const loadModel = async (modelName, loadFunction) => {
         try {
@@ -81,11 +81,11 @@ const BiometricAuth = ({
           throw error;
         }
       };
-      
+
       await loadModel('TinyFaceDetector', () => faceapi.nets.tinyFaceDetector.loadFromUri('/models'));
       await loadModel('FaceLandmark68Net', () => faceapi.nets.faceLandmark68Net.loadFromUri('/models'));
       await loadModel('FaceRecognitionNet', () => faceapi.nets.faceRecognitionNet.loadFromUri('/models'));
-      
+
       setModelsLoaded(true);
       console.log('✅ All models loaded successfully');
     } catch (error) {
@@ -101,20 +101,20 @@ const BiometricAuth = ({
       console.log('❌ Models not loaded yet');
       return null;
     }
-    
+
     if (!videoRef.current) {
       console.log('❌ Video ref not available');
       return null;
     }
-    
+
     try {
       console.log('🔍 Attempting face detection...');
       console.log('Video element:', videoRef.current);
       console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
-      
+
       // Try different detection approaches
       let detections = [];
-      
+
       // Method 1: Try with default options
       try {
         console.log('🔍 Trying default detection...');
@@ -126,7 +126,7 @@ const BiometricAuth = ({
       } catch (error) {
         console.log('❌ Default detection failed:', error.message);
       }
-      
+
       // Method 2: Try with custom options if no faces found
       if (detections.length === 0) {
         try {
@@ -135,7 +135,7 @@ const BiometricAuth = ({
             inputSize: 320,
             scoreThreshold: 0.3 // Lower threshold for better detection
           });
-          
+
           detections = await faceapi
             .detectAllFaces(videoRef.current, options)
             .withFaceLandmarks()
@@ -145,14 +145,14 @@ const BiometricAuth = ({
           console.log('❌ Custom detection failed:', error.message);
         }
       }
-      
+
       // Method 3: Try basic detection without landmarks/descriptors
       if (detections.length === 0) {
         try {
           console.log('🔍 Trying basic detection...');
           const basicDetections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions());
           console.log(`📊 Basic detection: ${basicDetections.length} faces`);
-          
+
           if (basicDetections.length > 0) {
             // If basic detection works, try to add landmarks and descriptors
             detections = await faceapi
@@ -165,9 +165,9 @@ const BiometricAuth = ({
           console.log('❌ Basic detection failed:', error.message);
         }
       }
-      
+
       console.log('📊 Final detection results:', detections.length, 'faces found');
-      
+
       if (detections.length > 0) {
         setFaceDetected(true);
         console.log('✅ Face detected successfully');
@@ -188,17 +188,17 @@ const BiometricAuth = ({
   const checkLiveness = async () => {
     const face = await detectFace();
     if (!face || !face.landmarks) return false;
-    
+
     try {
       const landmarks = face.landmarks;
-      
+
       // Check for eye blinking (simple liveness check)
       const leftEye = landmarks.getLeftEye();
       const rightEye = landmarks.getRightEye();
-      
+
       const leftEAR = calculateEAR(leftEye);
       const rightEAR = calculateEAR(rightEye);
-      
+
       // Eyes should be open for liveness
       return leftEAR > 0.25 && rightEAR > 0.25;
     } catch (error) {
@@ -212,7 +212,7 @@ const BiometricAuth = ({
     const vertical1 = Math.abs(eye[1].y - eye[5].y);
     const vertical2 = Math.abs(eye[2].y - eye[4].y);
     const horizontal = Math.abs(eye[0].x - eye[3].x);
-    
+
     return (vertical1 + vertical2) / (2 * horizontal);
   };
 
@@ -225,44 +225,44 @@ const BiometricAuth = ({
 
     try {
       console.log('📷 Requesting camera access...');
-      
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 640 }, 
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
           height: { ideal: 480 },
           facingMode: 'user' // Front camera
-        } 
+        }
       });
-      
+
       console.log('✅ Camera access granted');
       console.log('Stream tracks:', mediaStream.getTracks());
-      
+
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        
+
         // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           console.log('📹 Video metadata loaded');
           console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
         };
-        
+
         videoRef.current.oncanplay = () => {
           console.log('▶️ Video can play');
         };
       }
-      
+
       setIsActive(true);
-      
+
       // Start continuous face detection with shorter interval
       detectionIntervalRef.current = setInterval(async () => {
         await detectFace();
       }, 500); // Check every 500ms instead of 1000ms
-      
+
     } catch (error) {
       console.error('❌ Error accessing camera:', error);
       console.error('Error details:', error.message);
-      
+
       if (error.name === 'NotAllowedError') {
         setError('Camera access denied. Please enable camera permissions and refresh the page.');
       } else if (error.name === 'NotFoundError') {
@@ -317,7 +317,7 @@ const BiometricAuth = ({
       }
 
       setCurrentStep('Processing face data...');
-      
+
       // Calculate average descriptor
       const avgDescriptor = new Float32Array(128);
       for (let i = 0; i < 128; i++) {
@@ -329,7 +329,7 @@ const BiometricAuth = ({
       }
 
       // Send to backend for storage
-      const response = await fetch('http://localhost:5000/api/faces/enroll', {
+      const response = await fetch('https://nidhisetu.onrender.com/api/faces/enroll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -370,11 +370,11 @@ const BiometricAuth = ({
 
     try {
       // Get stored face descriptors
-      const response = await fetch(`http://localhost:5000/api/faces/${userId}`);
+      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch stored faces');
       }
-      
+
       const storedFaces = await response.json();
       if (storedFaces.length === 0) {
         setError('No enrolled face found. Please enroll first.');
@@ -413,7 +413,7 @@ const BiometricAuth = ({
           currentFace.descriptor,
           new Float32Array(storedFace.descriptor)
         );
-        
+
         if (distance < minDistance) {
           minDistance = distance;
           bestMatch = storedFace;
@@ -481,7 +481,7 @@ const BiometricAuth = ({
             {mode === 'enroll' ? 'Face Enrollment' : 'Face Verification'}
           </h1>
           <p className="text-gray-600 text-lg">
-            {mode === 'enroll' 
+            {mode === 'enroll'
               ? 'Set up your biometric authentication for secure access'
               : 'Verify your identity using face recognition'
             }
@@ -522,7 +522,7 @@ const BiometricAuth = ({
                   </div>
                 )}
               </div>
-              
+
               {/* Control Buttons */}
               <div className="flex justify-center mt-4 space-x-4">
                 {!isActive ? (
@@ -543,7 +543,7 @@ const BiometricAuth = ({
                       <Pause className="w-5 h-5" />
                       <span>Stop Camera</span>
                     </button>
-                    
+
                     <button
                       onClick={detectFace}
                       disabled={!isActive}
@@ -552,7 +552,7 @@ const BiometricAuth = ({
                       <Camera className="w-5 h-5" />
                       <span>Test Detection</span>
                     </button>
-                    
+
                     {mode === 'enroll' ? (
                       <button
                         onClick={enrollFace}
@@ -595,7 +595,7 @@ const BiometricAuth = ({
                   </p>
                 </div>
               </div>
-              
+
               {currentStep && (
                 <div className="mb-4">
                   <p className="text-gray-600 text-sm">{currentStep}</p>
@@ -650,9 +650,8 @@ const BiometricAuth = ({
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      verificationStatus === 'enrolling' ? 'bg-purple-600' : 'bg-blue-600'
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${verificationStatus === 'enrolling' ? 'bg-purple-600' : 'bg-blue-600'
+                      }`}
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>

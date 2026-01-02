@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       const storedUserType = localStorage.getItem('userType');
       const storedBiometricEnrolled = localStorage.getItem('biometricEnrolled');
       const storedFaceVerified = localStorage.getItem('faceVerified');
-      
+
       if (token) {
         try {
           // Load user data from localStorage
@@ -60,15 +60,15 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, type = 'normal') => {
     try {
       // Choose the appropriate API endpoint based on user type
-      const apiEndpoint = type === 'nominee' 
-        ? 'http://localhost:5000/api/nominees/login'
-        : 'http://localhost:5000/api/users/login';
-      
+      const apiEndpoint = type === 'nominee'
+        ? 'https://nidhisetu.onrender.com/api/nominees/login'
+        : 'https://nidhisetu.onrender.com/api/users/login';
+
       const response = await axios.post(apiEndpoint, {
         email,
         password
       });
-      
+
       const { token, userType: responseUserType, user: userData } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('userType', responseUserType || type);
@@ -78,9 +78,9 @@ export const AuthProvider = ({ children }) => {
       setUserType(responseUserType || type);
       return { success: true, userType: responseUserType || type, user: userData };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Login failed' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Login failed'
       };
     }
   };
@@ -88,12 +88,12 @@ export const AuthProvider = ({ children }) => {
   const signup = async (formData, type = 'normal') => {
     try {
       // Choose the appropriate API endpoint based on user type
-      const apiEndpoint = type === 'nominee' 
-        ? 'http://localhost:5000/api/nominees/register'
-        : 'http://localhost:5000/api/users/register';
-      
+      const apiEndpoint = type === 'nominee'
+        ? 'https://nidhisetu.onrender.com/api/nominees/register'
+        : 'https://nidhisetu.onrender.com/api/users/register';
+
       const response = await axios.post(apiEndpoint, formData);
-      
+
       const { token, userType: responseUserType, user: userData } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('userType', responseUserType || type);
@@ -103,9 +103,9 @@ export const AuthProvider = ({ children }) => {
       setUserType(responseUserType || type);
       return { success: true, userType: responseUserType || type, user: userData };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Signup failed' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Signup failed'
       };
     }
   };
@@ -113,16 +113,16 @@ export const AuthProvider = ({ children }) => {
   const getUserProfile = async () => {
     try {
       // Choose the appropriate API endpoint based on user type
-      const apiEndpoint = userType === 'nominee' 
-        ? 'http://localhost:5000/api/nominees/profile'
-        : 'http://localhost:5000/api/users/profile';
-      
+      const apiEndpoint = userType === 'nominee'
+        ? 'https://nidhisetu.onrender.com/api/nominees/profile'
+        : 'https://nidhisetu.onrender.com/api/users/profile';
+
       const response = await axios.get(apiEndpoint);
       return { success: true, user: response.data.user || response.data.nominee };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Failed to fetch user profile' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to fetch user profile'
       };
     }
   };
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }) => {
   // Check biometric enrollment status
   const checkBiometricEnrollment = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/faces/enrollment-status/${userId}`);
+      const response = await axios.get(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${userId}`);
       const isEnrolled = response.data.isEnrolled;
       setBiometricEnrolled(isEnrolled);
       localStorage.setItem('biometricEnrolled', isEnrolled.toString());
@@ -144,10 +144,10 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Choose the appropriate API endpoint based on user type
-      const apiEndpoint = userType === 'nominee' 
-        ? 'http://localhost:5000/api/nominees/logout'
-        : 'http://localhost:5000/api/users/logout';
-      
+      const apiEndpoint = userType === 'nominee'
+        ? 'https://nidhisetu.onrender.com/api/nominees/logout'
+        : 'https://nidhisetu.onrender.com/api/users/logout';
+
       await axios.post(apiEndpoint);
     } catch (error) {
       console.error('Logout error:', error);

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Send, 
-  CheckCircle, 
-  ArrowRight, 
-  Shield, 
-  Users, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  CheckCircle,
+  ArrowRight,
+  Shield,
+  Users,
   Globe,
   MessageCircle,
   Headphones,
@@ -129,7 +129,7 @@ const Contact = () => {
     }, observerOptions);
 
     document.querySelectorAll('[data-section]').forEach(el => observer.observe(el));
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -144,10 +144,10 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError('');
-    
+
     try {
-      const response = await axios.post('http://localhost:5000/api/contact/send', formData);
-      
+      const response = await axios.post('https://nidhisetu.onrender.com/api/contact/send', formData);
+
       if (response.data.success) {
         setIsSubmitted(true);
         setFormData({
@@ -164,7 +164,7 @@ const Contact = () => {
     } catch (error) {
       console.error('Error sending contact form:', error);
       setSubmitError(
-        error.response?.data?.message || 
+        error.response?.data?.message ||
         'Failed to send message. Please check your connection and try again.'
       );
     } finally {
@@ -183,7 +183,7 @@ const Contact = () => {
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -192,8 +192,8 @@ const Contact = () => {
               <MessageCircle className="w-5 h-5 mr-2" />
               24/7 Customer Support Available
             </motion.div>
-            
-            <motion.h1 
+
+            <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -202,8 +202,8 @@ const Contact = () => {
               Get in Touch
               <span className="block text-yellow-400">We're Here to Help</span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -218,7 +218,7 @@ const Contact = () => {
       {/* Contact Information Cards */}
       <section className="py-20 bg-white" data-section="contact-info">
         <div className="max-w-7xl mx-auto px-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isVisible['contact-info'] ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8 }}
@@ -245,10 +245,10 @@ const Contact = () => {
                     {info.icon}
                   </div>
                 </div>
-                
+
                 <h3 className="text-xl font-bold text-gray-800 mb-4">{info.title}</h3>
                 <p className="text-gray-600 mb-4 leading-relaxed">{info.description}</p>
-                
+
                 <div className="space-y-2">
                   {info.details.map((detail, detailIndex) => (
                     <div key={detailIndex} className="text-sm font-semibold text-gray-700">
@@ -289,7 +289,7 @@ const Contact = () => {
                   </div>
                   <h4 className="text-2xl font-bold text-gray-800 mb-4">Message Sent Successfully!</h4>
                   <p className="text-gray-600 mb-6">
-                    Thank you for contacting us! We have received your inquiry and will get back to you within 24 hours. 
+                    Thank you for contacting us! We have received your inquiry and will get back to you within 24 hours.
                     A confirmation email has been sent to your email address.
                   </p>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -525,7 +525,7 @@ const Contact = () => {
                     <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   )}
                 </button>
-                
+
                 <AnimatePresence>
                   {expandedFaq === index && (
                     <motion.div
@@ -566,7 +566,7 @@ const Contact = () => {
           >
             Our support team is always ready to assist you with any questions or concerns.
           </motion.p>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
