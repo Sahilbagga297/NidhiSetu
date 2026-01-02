@@ -172,7 +172,7 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       console.log('Fetching schemes with token:', token ? 'Present' : 'Missing');
 
-      const response = await axios.get('/api/auth/schemes', {
+      const response = await axios.get('https://nidhisetu.onrender.com/api/auth/schemes', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -508,7 +508,7 @@ const Dashboard = () => {
         console.log('Submitting scheme:', schemeFormData);
         console.log('Token:', token ? 'Present' : 'Missing');
 
-        const response = await axios.post('/api/auth/schemes', {
+        const response = await axios.post('https://nidhisetu.onrender.com/api/auth/schemes', {
           schemeName: schemeFormData.schemeName,
           schemeId: schemeFormData.schemeId,
           userUniqueSchemeNumber: schemeFormData.userUniqueSchemeNumber
@@ -558,7 +558,7 @@ const Dashboard = () => {
     setCallStatus(null);
 
     try {
-      const response = await axios.post('/api/twilio/generate-call', {
+      const response = await axios.post('https://nidhisetu.onrender.com/api/twilio/generate-call', {
         phoneNumber: userData.phoneNumber,
         userName: userData.fullName
       });

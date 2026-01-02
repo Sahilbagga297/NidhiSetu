@@ -16,11 +16,11 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   const [currentFaceDescriptor, setCurrentFaceDescriptor] = useState(null);
   const [enrollmentProgress, setEnrollmentProgress] = useState(0);
   const [verificationProgress, setVerificationProgress] = useState(0);
-  
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const detectionIntervalRef = useRef(null);
-  
+
   const { setFaceVerificationStatus } = useAuth();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   useEffect(() => {
     loadModels();
     checkEnrollmentStatus();
-    
+
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -72,13 +72,13 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   // Real face detection using face-api.js
   const detectFace = async () => {
     if (!modelsLoaded || !videoRef.current) return null;
-    
+
     // Check if video is ready
     if (videoRef.current.readyState < 2) {
       console.log('Video not ready yet');
       return null;
     }
-    
+
     try {
       console.log('Attempting face detection...');
       const detections = await faceapi
@@ -88,9 +88,9 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
         }))
         .withFaceLandmarks()
         .withFaceDescriptors();
-      
+
       console.log(`Detected ${detections.length} faces`);
-      
+
       if (detections.length > 0) {
         setFaceDetected(true);
         // Draw detection box on canvas
@@ -112,25 +112,25 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   // Draw face detection boxes on canvas
   const drawDetections = (detections) => {
     if (!canvasRef.current || !videoRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const video = videoRef.current;
     const ctx = canvas.getContext('2d');
-    
+
     // Set canvas size to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     detections.forEach(detection => {
       const { x, y, width, height } = detection.detection.box;
-      
+
       // Draw bounding box
       ctx.strokeStyle = '#00ff00';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
-      
+
       // Draw landmarks
       if (detection.landmarks) {
         ctx.fillStyle = '#ff0000';
@@ -155,17 +155,17 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   const checkLiveness = async () => {
     const face = await detectFace();
     if (!face || !face.landmarks) return false;
-    
+
     try {
       const landmarks = face.landmarks;
-      
+
       // Check for eye blinking (simple liveness check)
       const leftEye = landmarks.getLeftEye();
       const rightEye = landmarks.getRightEye();
-      
+
       const leftEAR = calculateEAR(leftEye);
       const rightEAR = calculateEAR(rightEye);
-      
+
       // Eyes should be open for liveness
       return leftEAR > 0.25 && rightEAR > 0.25;
     } catch (error) {
@@ -179,7 +179,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
     const vertical1 = Math.abs(eye[1].y - eye[5].y);
     const vertical2 = Math.abs(eye[2].y - eye[4].y);
     const horizontal = Math.abs(eye[0].x - eye[3].x);
-    
+
     return (vertical1 + vertical2) / (2 * horizontal);
   };
 
@@ -220,7 +220,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
       }
 
       // Send to backend for storage
-      const response = await fetch('/api/faces/enroll', {
+      const response = await fetch('https://nidhisetu.onrender.com/api/faces/enroll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
         setIsEnrolled(true);
         setVerificationStatus('success');
         alert('Face enrollment successful!');
-        
+
         // Call enrollment completion callback if provided
         if (onEnrollmentComplete) {
           setTimeout(() => {
@@ -274,7 +274,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
       if (!response.ok) {
         throw new Error('Failed to fetch stored faces');
       }
-      
+
       const storedFaces = await response.json();
       if (storedFaces.length === 0) {
         alert('No enrolled face found. Please enroll first.');
@@ -313,7 +313,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
           currentFace.descriptor,
           new Float32Array(storedFace.descriptor)
         );
-        
+
         if (distance < minDistance) {
           minDistance = distance;
           bestMatch = storedFace;
@@ -327,10 +327,10 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
       if (minDistance < threshold) {
         setVerificationStatus('success');
         setUser(prev => ({ ...prev, verificationCount: prev.verificationCount + 1 }));
-        
+
         // Set face verification status in AuthContext
         setFaceVerificationStatus(true);
-        
+
         // Call the verification success callback if provided
         if (onVerificationSuccess) {
           onVerificationSuccess();
@@ -359,32 +359,32 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
 
     try {
       console.log('Requesting camera access...');
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 640 }, 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
           height: { ideal: 480 },
           facingMode: 'user'
-        } 
+        }
       });
-      
+
       console.log('Camera access granted');
       setStream(mediaStream);
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        
+
         // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           console.log('Video metadata loaded');
           setIsActive(true);
-          
+
           // Start continuous face detection with shorter interval for better responsiveness
           detectionIntervalRef.current = setInterval(async () => {
             await detectFace();
           }, 500); // Reduced from 1000ms to 500ms
         };
       }
-      
+
     } catch (error) {
       console.error('Error accessing camera:', error);
       alert('Camera access denied. Please enable camera permissions and refresh the page.');
@@ -398,10 +398,10 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
     if (detectionIntervalRef.current) {
       clearInterval(detectionIntervalRef.current);
     }
-    
+
     // Clear canvas
     clearCanvas();
-    
+
     setStream(null);
     setIsActive(false);
     setVerificationStatus('idle');
@@ -515,7 +515,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 </div>
               )}
             </div>
-            
+
             {/* Status Message */}
             {isActive && (
               <div className="mt-4 text-center">
@@ -567,7 +567,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 <div className={`w-3 h-3 rounded-full ${livenessPassed || verificationStatus === 'success' ? 'bg-green-600' : 'bg-gray-300'}`} />
               </div>
             </div>
-            
+
             {/* Progress Bars */}
             {(verificationStatus === 'enrolling' || verificationStatus === 'detecting') && (
               <div className="mt-4">
@@ -581,11 +581,10 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      verificationStatus === 'enrolling' ? 'bg-purple-600' : 'bg-blue-600'
-                    }`}
-                    style={{ 
-                      width: `${verificationStatus === 'enrolling' ? enrollmentProgress : verificationProgress}%` 
+                    className={`h-2 rounded-full transition-all duration-300 ${verificationStatus === 'enrolling' ? 'bg-purple-600' : 'bg-blue-600'
+                      }`}
+                    style={{
+                      width: `${verificationStatus === 'enrolling' ? enrollmentProgress : verificationProgress}%`
                     }}
                   ></div>
                 </div>
@@ -598,18 +597,16 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
               <h4 className="text-lg font-bold text-gray-800 mb-4">Current Detection Angle</h4>
               <div className="text-center">
                 <div
-                  className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 ${
-                    faceAngle === 'center' ? 'bg-blue-100 border-2 border-blue-600' :
-                    faceAngle === 'left' ? 'bg-yellow-100 border-2 border-yellow-600' :
-                    'bg-purple-100 border-2 border-purple-600'
-                  }`}
+                  className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 ${faceAngle === 'center' ? 'bg-blue-100 border-2 border-blue-600' :
+                      faceAngle === 'left' ? 'bg-yellow-100 border-2 border-yellow-600' :
+                        'bg-purple-100 border-2 border-purple-600'
+                    }`}
                 >
                   <Square
-                    className={`w-8 h-8 ${
-                      faceAngle === 'center' ? 'text-blue-600' :
-                      faceAngle === 'left' ? 'text-yellow-600' :
-                      'text-purple-600'
-                    }`}
+                    className={`w-8 h-8 ${faceAngle === 'center' ? 'text-blue-600' :
+                        faceAngle === 'left' ? 'text-yellow-600' :
+                          'text-purple-600'
+                      }`}
                   />
                 </div>
                 <p className="text-gray-800 font-medium capitalize">{faceAngle} Angle</p>

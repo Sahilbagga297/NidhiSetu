@@ -16,7 +16,7 @@ const TwilioCallBot = () => {
     setStatus(null);
 
     try {
-      const response = await fetch('/api/twilio/call', {
+      const response = await fetch('https://nidhisetu.onrender.com/api/twilio/call', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,13 +47,13 @@ const TwilioCallBot = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/twilio/call/${callSid}`);
+      const response = await fetch(`https://nidhisetu.onrender.com/api/twilio/call/${callSid}`);
       const data = await response.json();
 
       if (data.success) {
-        setStatus({ 
-          type: 'info', 
-          message: `Status: ${data.call.status}, Duration: ${data.call.duration || 'N/A'}s` 
+        setStatus({
+          type: 'info',
+          message: `Status: ${data.call.status}, Duration: ${data.call.duration || 'N/A'}s`
         });
       } else {
         setStatus({ type: 'error', message: data.message });
@@ -71,7 +71,7 @@ const TwilioCallBot = () => {
     setUserCallStatus(null);
 
     try {
-      const response = await fetch('/api/twilio/generate-call', {
+      const response = await fetch('https://nidhisetu.onrender.com/api/twilio/generate-call', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const TwilioCallBot = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">📞 Generate Call to User</h2>
-          
+
           <div className="bg-blue-50 rounded-lg p-4 mb-4">
             <p className="text-gray-700 text-sm">
               Generate an AI-powered call to a specific user's phone number. The AI will greet them personally and help with their questions.
@@ -163,11 +163,10 @@ const TwilioCallBot = () => {
           </form>
 
           {userCallStatus && (
-            <div className={`mt-4 p-4 rounded-md ${
-              userCallStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
-              userCallStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
-              'bg-blue-50 border border-blue-200 text-blue-800'
-            }`}>
+            <div className={`mt-4 p-4 rounded-md ${userCallStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
+                userCallStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
+                  'bg-blue-50 border border-blue-200 text-blue-800'
+              }`}>
               <strong>{userCallStatus.type === 'success' ? '✅ Success:' : userCallStatus.type === 'error' ? '❌ Error:' : 'ℹ️ Info:'}</strong> {userCallStatus.message}
             </div>
           )}
@@ -175,7 +174,7 @@ const TwilioCallBot = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">📞 Make Outbound Call</h2>
-          
+
           <form onSubmit={makeCall} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -228,11 +227,10 @@ const TwilioCallBot = () => {
         </div>
 
         {status && (
-          <div className={`p-4 rounded-md ${
-            status.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
-            status.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
-            'bg-blue-50 border border-blue-200 text-blue-800'
-          }`}>
+          <div className={`p-4 rounded-md ${status.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
+              status.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
+                'bg-blue-50 border border-blue-200 text-blue-800'
+            }`}>
             <strong>{status.type === 'success' ? '✅ Success:' : status.type === 'error' ? '❌ Error:' : 'ℹ️ Info:'}</strong> {status.message}
           </div>
         )}

@@ -10,14 +10,14 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
   const [faceDetected, setFaceDetected] = useState(false);
   const [verificationProgress, setVerificationProgress] = useState(0);
   const [userId, setUserId] = useState('');
-  
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const detectionIntervalRef = useRef(null);
 
   useEffect(() => {
     loadModels();
-    
+
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -46,13 +46,13 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
   // Real face detection using face-api.js
   const detectFace = async () => {
     if (!modelsLoaded || !videoRef.current) return null;
-    
+
     // Check if video is ready
     if (videoRef.current.readyState < 2) {
       console.log('Video not ready yet');
       return null;
     }
-    
+
     try {
       const detections = await faceapi
         .detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions({
@@ -61,7 +61,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
         }))
         .withFaceLandmarks()
         .withFaceDescriptors();
-      
+
       if (detections.length > 0) {
         setFaceDetected(true);
         // Draw detection box on canvas
@@ -83,25 +83,25 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
   // Draw face detection boxes on canvas
   const drawDetections = (detections) => {
     if (!canvasRef.current || !videoRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const video = videoRef.current;
     const ctx = canvas.getContext('2d');
-    
+
     // Set canvas size to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     detections.forEach(detection => {
       const { x, y, width, height } = detection.detection.box;
-      
+
       // Draw bounding box
       ctx.strokeStyle = '#00ff00';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
-      
+
       // Draw landmarks
       if (detection.landmarks) {
         ctx.fillStyle = '#ff0000';
@@ -151,7 +151,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
       setVerificationProgress(50);
 
       // Send face descriptor for login verification
-      const response = await fetch('/api/faces/login', {
+      const response = await fetch('https://nidhisetu.onrender.com/api/faces/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
       if (data.success && data.isMatch) {
         setVerificationStatus('success');
         alert('Face verification successful! Logging you in...');
-        
+
         // Call the success callback with user data and token
         onLoginSuccess(data.token, data.user);
       } else {
@@ -193,32 +193,32 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
 
     try {
       console.log('Requesting camera access...');
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 640 }, 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
           height: { ideal: 480 },
           facingMode: 'user'
-        } 
+        }
       });
-      
+
       console.log('Camera access granted');
       setStream(mediaStream);
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        
+
         // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           console.log('Video metadata loaded');
           setIsActive(true);
-          
+
           // Start continuous face detection
           detectionIntervalRef.current = setInterval(async () => {
             await detectFace();
           }, 500);
         };
       }
-      
+
     } catch (error) {
       console.error('Error accessing camera:', error);
       alert('Camera access denied. Please enable camera permissions and refresh the page.');
@@ -232,10 +232,10 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
     if (detectionIntervalRef.current) {
       clearInterval(detectionIntervalRef.current);
     }
-    
+
     // Clear canvas
     clearCanvas();
-    
+
     setStream(null);
     setIsActive(false);
     setVerificationStatus('idle');
@@ -300,7 +300,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
                 </div>
               )}
             </div>
-            
+
             {/* User ID Input */}
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -315,7 +315,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
                 disabled={isActive}
               />
             </div>
-            
+
             <div className="flex justify-center mt-4 space-x-4">
               {!isActive ? (
                 <div className="flex space-x-4">
@@ -348,7 +348,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
                 </div>
               )}
             </div>
-            
+
             {/* Status Message */}
             {isActive && (
               <div className="mt-4 text-center">
@@ -395,7 +395,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
                 <div className={`w-3 h-3 rounded-full ${userId.trim() ? 'bg-green-600' : 'bg-gray-300'}`} />
               </div>
             </div>
-            
+
             {/* Progress Bar */}
             {verificationStatus === 'detecting' && (
               <div className="mt-4">
