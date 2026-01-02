@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from './components/navbar'
+import Navbar from './components/Navbar'
 import Mainroutes from './routes/Mainroutes'
 import { AuthProvider } from './context/AuthContext'
 import { GlobalFundsProvider } from './context/GlobalFundsContext'
