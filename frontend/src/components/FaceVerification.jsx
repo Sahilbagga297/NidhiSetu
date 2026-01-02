@@ -270,7 +270,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
 
     try {
       // Get stored face descriptors
-      const response = await fetch(`/api/faces/${user.id}`);
+      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/${user.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch stored faces');
       }
