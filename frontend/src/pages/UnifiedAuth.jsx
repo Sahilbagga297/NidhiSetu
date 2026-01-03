@@ -233,10 +233,10 @@ const UnifiedAuth = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-8 sm:gap-12 items-start lg:items-center">
         {/* Left Column - Auth Form */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 relative overflow-hidden">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 border border-gray-100 relative overflow-hidden max-h-[90vh] overflow-y-auto">
           {/* Main User Type Slider */}
           <div className="flex items-center justify-center mb-8">
             <div className="bg-gray-100 rounded-full p-1 flex">
@@ -376,9 +376,9 @@ const UnifiedAuth = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${userType === 'normal'
-                      ? 'bg-blue-600 hover:bg-blue-700'
-                      : 'bg-green-600 hover:bg-green-700'
+                    className={`w-full text-white py-3.5 sm:py-3 px-4 rounded-xl font-semibold text-base sm:text-sm transition-all duration-300 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center touch-manipulation min-h-[44px] ${userType === 'normal'
+                      ? 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
+                      : 'bg-green-600 hover:bg-green-700 active:bg-green-800'
                       }`}
                   >
                     {loading ? (
@@ -808,9 +808,9 @@ const UnifiedAuth = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center ${userType === 'normal'
-                      ? 'bg-blue-600 hover:bg-blue-700'
-                      : 'bg-green-600 hover:bg-green-700'
+                    className={`w-full text-white py-3.5 sm:py-3 px-4 rounded-xl font-semibold text-base sm:text-sm transition-all duration-300 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center touch-manipulation min-h-[44px] ${userType === 'normal'
+                      ? 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'
+                      : 'bg-green-600 hover:bg-green-700 active:bg-green-800'
                       }`}
                   >
                     {loading ? (

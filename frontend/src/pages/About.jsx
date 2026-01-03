@@ -238,35 +238,35 @@ const About = () => {
               Government of India Digital Initiative
             </div>
             
-            <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight px-2">
               Secure Benefit
               <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Distribution Platform
               </span>
             </h1>
             
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-8">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8 px-4">
               Revolutionary digital platform ensuring transparent, secure, and efficient delivery of government benefits 
               through cutting-edge biometric technology and real-time fraud prevention systems.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12">
               <button 
                 onClick={() => navigate('/verification')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center"
+                className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 sm:px-10 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 shadow-xl flex items-center justify-center touch-manipulation min-h-[44px]"
               >
-                <Eye className="mr-3 w-6 h-6" />
+                <Eye className="mr-3 w-5 h-5 sm:w-6 sm:h-6" />
                 Start Verification Process
               </button>
-              <button className="border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 text-gray-700 px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center">
-                <Phone className="mr-3 w-5 h-5" />
+              <button className="border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 active:border-blue-600 active:text-blue-600 text-gray-700 px-6 sm:px-10 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center touch-manipulation min-h-[44px]">
+                <Phone className="mr-3 w-4 h-4 sm:w-5 sm:h-5" />
                 Get Support
               </button>
             </div>
           </div>
 
           {/* Dynamic Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {heroStats.map((stat, index) => (
               <div key={index} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
                 <div className={`text-4xl font-bold ${stat.color} mb-2 group-hover:scale-110 transition-transform duration-300`}>
@@ -492,22 +492,22 @@ const About = () => {
               <div className="space-y-4">
                 <button 
                   onClick={() => navigate('/verification')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-lg"
+                  className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center shadow-lg touch-manipulation min-h-[44px]"
                 >
-                  <Eye className="mr-3 w-6 h-6" />
+                  <Eye className="mr-3 w-5 h-5 sm:w-6 sm:h-6" />
                   Start Face Verification
                 </button>
                 
-                <button className="w-full border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 text-gray-700 px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center">
-                  <FileCheck className="mr-3 w-6 h-6" />
+                <button className="w-full border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 active:border-blue-600 active:text-blue-600 text-gray-700 px-6 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center touch-manipulation min-h-[44px]">
+                  <FileCheck className="mr-3 w-5 h-5 sm:w-6 sm:h-6" />
                   Check Application Status
                 </button>
                 
                 <button 
-                  onClick={() => navigate('/signup')}
-                  className="w-full border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 text-gray-700 px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center"
+                  onClick={() => navigate('/auth')}
+                  className="w-full border-2 border-gray-300 hover:border-blue-600 hover:text-blue-600 active:border-blue-600 active:text-blue-600 text-gray-700 px-6 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center justify-center touch-manipulation min-h-[44px]"
                 >
-                  <Users className="mr-3 w-6 h-6" />
+                  <Users className="mr-3 w-5 h-5 sm:w-6 sm:h-6" />
                   Register New Account
                 </button>
               </div>

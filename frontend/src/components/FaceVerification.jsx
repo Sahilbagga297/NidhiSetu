@@ -359,13 +359,25 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
 
     try {
       console.log('Requesting camera access...');
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      // Mobile-friendly camera constraints
+      const constraints = {
         video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user'
+          facingMode: 'user', // Front-facing camera for mobile
+          width: { ideal: 640, max: 1280 },
+          height: { ideal: 480, max: 720 }
         }
-      });
+      };
+      
+      // For mobile devices, use more flexible constraints
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        constraints.video = {
+          facingMode: 'user',
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        };
+      }
+      
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
 
       console.log('Camera access granted');
       setStream(mediaStream);
@@ -433,17 +445,17 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-3 transition-all duration-700">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
+      <div className="mb-6 sm:mb-8 md:mb-10 text-center">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2 sm:mb-3 transition-all duration-700">
           Face Verification
         </h1>
-        <p className="text-gray-600 text-lg">Multi-angle face recognition with liveness detection</p>
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg px-2">Multi-angle face recognition with liveness detection</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
         {/* Video Feed */}
-        <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
           <div className="relative">
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden relative">
               <video
@@ -456,8 +468,8 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
               <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }} />
               {isActive && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className={`border-2 w-48 h-60 rounded-lg relative ${faceDetected ? 'border-green-600 animate-pulse' : 'border-blue-600 animate-pulse'}`}>
-                    <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded text-white text-sm shadow-md ${faceDetected ? 'bg-green-600' : 'bg-blue-600'}`}>
+                  <div className={`border-2 w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-60 rounded-lg relative ${faceDetected ? 'border-green-600 animate-pulse' : 'border-blue-600 animate-pulse'}`}>
+                    <div className={`absolute -top-5 sm:-top-6 left-1/2 transform -translate-x-1/2 px-2 sm:px-3 py-1 rounded text-white text-xs sm:text-sm shadow-md ${faceDetected ? 'bg-green-600' : 'bg-blue-600'}`}>
                       {faceDetected ? 'Face Detected ✓' : 'Looking for face...'}
                     </div>
                   </div>
@@ -472,59 +484,57 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 </div>
               )}
             </div>
-            <div className="flex justify-center mt-4 space-x-4">
+            <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center mt-4 gap-3 sm:gap-4">
               {!isActive ? (
-                <div className="flex space-x-4">
-                  <button
-                    onClick={startVerification}
-                    disabled={!modelsLoaded || user.verificationCount >= 20}
-                    className="flex items-center space-x-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
-                  >
-                    <Play className="w-5 h-5" />
-                    <span>Start Camera</span>
-                  </button>
-                </div>
+                <button
+                  onClick={startVerification}
+                  disabled={!modelsLoaded || user.verificationCount >= 20}
+                  className="flex items-center justify-center space-x-2 px-6 py-3.5 sm:py-3 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px]"
+                >
+                  <Play className="w-5 h-5" />
+                  <span className="text-base sm:text-sm">Start Camera</span>
+                </button>
               ) : (
-                <div className="flex space-x-4">
+                <>
                   {!isEnrolled ? (
                     <button
                       onClick={enrollFace}
                       disabled={!modelsLoaded || user.verificationCount >= 20 || !faceDetected}
-                      className="flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+                      className="flex items-center justify-center space-x-2 px-6 py-3.5 sm:py-3 bg-purple-500 hover:bg-purple-600 active:bg-purple-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px]"
                     >
                       <UserPlus className="w-5 h-5" />
-                      <span>Enroll Face</span>
+                      <span className="text-base sm:text-sm">Enroll Face</span>
                     </button>
                   ) : (
                     <button
                       onClick={verifyFace}
                       disabled={!modelsLoaded || user.verificationCount >= 20 || !faceDetected}
-                      className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+                      className="flex items-center justify-center space-x-2 px-6 py-3.5 sm:py-3 bg-green-500 hover:bg-green-600 active:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px]"
                     >
                       <Shield className="w-5 h-5" />
-                      <span>Verify Face</span>
+                      <span className="text-base sm:text-sm">Verify Face</span>
                     </button>
                   )}
                   <button
                     onClick={stopVerification}
-                    className="flex items-center space-x-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+                    className="flex items-center justify-center space-x-2 px-6 py-3.5 sm:py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px]"
                   >
                     <Pause className="w-5 h-5" />
-                    <span>Stop Camera</span>
+                    <span className="text-base sm:text-sm">Stop Camera</span>
                   </button>
-                </div>
+                </>
               )}
             </div>
 
             {/* Status Message */}
             {isActive && (
-              <div className="mt-4 text-center">
+              <div className="mt-4 text-center px-2">
                 {!faceDetected ? (
-                  <p className="text-blue-600 text-sm">
+                  <p className="text-blue-600 text-xs sm:text-sm">
                     Position your face in the camera view to enable enrollment/verification
                   </p>
                 ) : (
-                  <p className="text-green-600 text-sm font-medium">
+                  <p className="text-green-600 text-xs sm:text-sm font-medium">
                     ✓ Face detected! You can now enroll or verify your face
                   </p>
                 )}
@@ -534,13 +544,13 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
         </div>
 
         {/* Verification Progress */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
             <div className="flex items-center space-x-3 mb-4">
               <div className={getStatusColor()}>{getStatusIcon()}</div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-800">Verification Status</h3>
-                <p className={`text-sm ${getStatusColor()}`}>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base sm:text-lg font-bold text-gray-800">Verification Status</h3>
+                <p className={`text-xs sm:text-sm ${getStatusColor()} break-words`}>
                   {verificationStatus === 'idle' && 'Ready to start'}
                   {verificationStatus === 'detecting' && 'Analyzing facial features...'}
                   {verificationStatus === 'enrolling' && 'Enrolling face data...'}
@@ -549,22 +559,22 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 </p>
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Models Loaded</span>
-                <div className={`w-3 h-3 rounded-full ${modelsLoaded ? 'bg-green-600' : 'bg-red-600'}`} />
+                <span className="text-gray-600 text-sm sm:text-base">Models Loaded</span>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${modelsLoaded ? 'bg-green-600' : 'bg-red-600'}`} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Face Detected</span>
-                <div className={`w-3 h-3 rounded-full ${faceDetected ? 'bg-green-600' : 'bg-gray-300'}`} />
+                <span className="text-gray-600 text-sm sm:text-base">Face Detected</span>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${faceDetected ? 'bg-green-600' : 'bg-gray-300'}`} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Enrollment Status</span>
-                <div className={`w-3 h-3 rounded-full ${isEnrolled ? 'bg-green-600' : 'bg-yellow-500'}`} />
+                <span className="text-gray-600 text-sm sm:text-base">Enrollment Status</span>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${isEnrolled ? 'bg-green-600' : 'bg-yellow-500'}`} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Liveness Detection</span>
-                <div className={`w-3 h-3 rounded-full ${livenessPassed || verificationStatus === 'success' ? 'bg-green-600' : 'bg-gray-300'}`} />
+                <span className="text-gray-600 text-sm sm:text-base">Liveness Detection</span>
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${livenessPassed || verificationStatus === 'success' ? 'bg-green-600' : 'bg-gray-300'}`} />
               </div>
             </div>
 
@@ -572,10 +582,10 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
             {(verificationStatus === 'enrolling' || verificationStatus === 'detecting') && (
               <div className="mt-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 text-sm sm:text-base">
                     {verificationStatus === 'enrolling' ? 'Enrollment Progress' : 'Verification Progress'}
                   </span>
-                  <span className="text-gray-800 font-bold">
+                  <span className="text-gray-800 font-bold text-sm sm:text-base">
                     {verificationStatus === 'enrolling' ? enrollmentProgress : verificationProgress}%
                   </span>
                 </div>
@@ -593,24 +603,24 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
           </div>
 
           {isActive && (
-            <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
-              <h4 className="text-lg font-bold text-gray-800 mb-4">Current Detection Angle</h4>
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+              <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-4">Current Detection Angle</h4>
               <div className="text-center">
                 <div
-                  className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-2 ${faceAngle === 'center' ? 'bg-blue-100 border-2 border-blue-600' :
+                  className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full mb-2 ${faceAngle === 'center' ? 'bg-blue-100 border-2 border-blue-600' :
                       faceAngle === 'left' ? 'bg-yellow-100 border-2 border-yellow-600' :
                         'bg-purple-100 border-2 border-purple-600'
                     }`}
                 >
                   <Square
-                    className={`w-8 h-8 ${faceAngle === 'center' ? 'text-blue-600' :
+                    className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${faceAngle === 'center' ? 'text-blue-600' :
                         faceAngle === 'left' ? 'text-yellow-600' :
                           'text-purple-600'
                       }`}
                   />
                 </div>
-                <p className="text-gray-800 font-medium capitalize">{faceAngle} Angle</p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-800 font-medium capitalize text-sm sm:text-base">{faceAngle} Angle</p>
+                <p className="text-gray-500 text-xs sm:text-sm px-2">
                   {faceAngle === 'center' && 'Looking straight ahead'}
                   {faceAngle === 'left' && 'Turn head slightly left'}
                   {faceAngle === 'right' && 'Turn head slightly right'}
@@ -619,11 +629,11 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
             </div>
           )}
 
-          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
-            <h4 className="text-lg font-bold text-gray-800 mb-4">Daily Usage</h4>
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+            <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-4">Daily Usage</h4>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600">Verifications</span>
-              <span className="text-gray-800 font-bold">{user.verificationCount}/20</span>
+              <span className="text-gray-600 text-sm sm:text-base">Verifications</span>
+              <span className="text-gray-800 font-bold text-sm sm:text-base">{user.verificationCount}/20</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
@@ -631,34 +641,34 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 style={{ width: `${(user.verificationCount / 20) * 100}%` }}
               ></div>
             </div>
-            <p className="text-gray-500 text-sm mt-2">Resets daily at midnight</p>
+            <p className="text-gray-500 text-xs sm:text-sm mt-2">Resets daily at midnight</p>
           </div>
 
           {/* Debug Panel */}
-          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
-            <h4 className="text-lg font-bold text-gray-800 mb-4">Debug Information</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Video Ready:</span>
-                <span className={videoRef.current?.readyState >= 2 ? 'text-green-600' : 'text-red-600'}>
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+            <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-4">Debug Information</h4>
+            <div className="space-y-2 text-xs sm:text-sm">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-600 flex-shrink-0">Video Ready:</span>
+                <span className={`flex-shrink-0 ${videoRef.current?.readyState >= 2 ? 'text-green-600' : 'text-red-600'}`}>
                   {videoRef.current?.readyState >= 2 ? 'Yes' : 'No'}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Video Size:</span>
-                <span className="text-gray-800">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-600 flex-shrink-0">Video Size:</span>
+                <span className="text-gray-800 text-right break-all">
                   {videoRef.current?.videoWidth ? `${videoRef.current.videoWidth}x${videoRef.current.videoHeight}` : 'N/A'}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Detection Active:</span>
-                <span className={detectionIntervalRef.current ? 'text-green-600' : 'text-red-600'}>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-600 flex-shrink-0">Detection Active:</span>
+                <span className={`flex-shrink-0 ${detectionIntervalRef.current ? 'text-green-600' : 'text-red-600'}`}>
                   {detectionIntervalRef.current ? 'Yes' : 'No'}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Camera Stream:</span>
-                <span className={stream ? 'text-green-600' : 'text-red-600'}>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-600 flex-shrink-0">Camera Stream:</span>
+                <span className={`flex-shrink-0 ${stream ? 'text-green-600' : 'text-red-600'}`}>
                   {stream ? 'Active' : 'Inactive'}
                 </span>
               </div>
@@ -668,7 +678,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
                 console.log('Manual face detection test');
                 detectFace();
               }}
-              className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors"
+              className="mt-4 w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-lg text-sm transition-colors touch-manipulation min-h-[44px]"
             >
               Test Detection
             </button>
@@ -676,14 +686,14 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
 
           {/* Skip Face Enrollment */}
           {onEnrollmentCancel && (
-            <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
-              <h4 className="text-lg font-bold text-gray-800 mb-4">Skip Face Enrollment</h4>
-              <p className="text-gray-600 text-sm mb-4">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100 transition-all duration-500 hover:shadow-xl">
+              <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-4">Skip Face Enrollment</h4>
+              <p className="text-gray-600 text-xs sm:text-sm mb-4">
                 You can skip face enrollment for now and set it up later from your dashboard.
               </p>
               <button
                 onClick={onEnrollmentCancel}
-                className="w-full px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="w-full px-4 py-3 sm:py-2 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition-colors touch-manipulation min-h-[44px]"
               >
                 Skip Face Enrollment
               </button>

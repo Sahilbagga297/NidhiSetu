@@ -612,9 +612,9 @@ const Dashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">Dashboard</h1>
 
         {/* Government Funds Allotted Section */}
         <motion.div
@@ -680,19 +680,19 @@ const Dashboard = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={generateCall}
-                disabled={isGeneratingCall || !userData?.phoneNumber}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${isGeneratingCall || !userData?.phoneNumber
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
-                  }`}
-              >
-                <PhoneCall className="w-5 h-5" />
-                <span>
-                  {isGeneratingCall ? 'Generating Call...' : 'Generate Call'}
-                </span>
-              </button>
+                  <button
+                    onClick={generateCall}
+                    disabled={isGeneratingCall || !userData?.phoneNumber}
+                    className={`flex items-center space-x-2 px-5 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-200 touch-manipulation min-h-[44px] ${isGeneratingCall || !userData?.phoneNumber
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg active:scale-95'
+                      }`}
+                  >
+                    <PhoneCall className="w-5 h-5" />
+                    <span>
+                      {isGeneratingCall ? 'Generating Call...' : 'Generate Call'}
+                    </span>
+                  </button>
 
               {callStatus && (
                 <div className={`px-4 py-2 rounded-lg text-sm ${callStatus.type === 'success'
@@ -730,7 +730,7 @@ const Dashboard = () => {
               Pension Calendar {new Date().getFullYear()}
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4">
               {Object.entries(pensionCalendar).map(([month, data]) => (
                 <motion.div
                   key={month}

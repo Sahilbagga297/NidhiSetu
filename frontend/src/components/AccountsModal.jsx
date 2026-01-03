@@ -43,20 +43,20 @@ const AccountsModal = ({ isOpen, onClose, transactionHistory, currentFunds }) =>
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-white">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="bg-white bg-opacity-20 p-3 rounded-xl mr-4">
-                    <FileText className="w-6 h-6" />
+                <div className="flex items-center flex-1 min-w-0">
+                  <div className="bg-white bg-opacity-20 p-2 sm:p-3 rounded-xl mr-3 sm:mr-4 flex-shrink-0">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold">Government Funds Accounts</h2>
-                    <p className="text-blue-100">Transaction history and fund management</p>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold truncate">Government Funds Accounts</h2>
+                    <p className="text-xs sm:text-sm text-blue-100 truncate">Transaction history and fund management</p>
                   </div>
                 </div>
                 <button
                   onClick={onClose}
-                  className="text-white hover:text-gray-200 transition-colors"
+                  className="text-white hover:text-gray-200 active:text-gray-300 transition-colors ml-2 flex-shrink-0 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -64,8 +64,8 @@ const AccountsModal = ({ isOpen, onClose, transactionHistory, currentFunds }) =>
             </div>
 
             {/* Current Funds Status */}
-            <div className="p-6 border-b border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div className="bg-blue-50 p-4 rounded-xl">
                   <div className="flex items-center">
                     <DollarSign className="w-5 h-5 text-blue-600 mr-2" />
@@ -103,8 +103,8 @@ const AccountsModal = ({ isOpen, onClose, transactionHistory, currentFunds }) =>
             </div>
 
             {/* Transaction History */}
-            <div className="p-6 max-h-96 overflow-y-auto">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <div className="p-4 sm:p-6 max-h-96 overflow-y-auto">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <Clock className="w-5 h-5 mr-2 text-gray-600" />
                 Transaction History
               </h3>

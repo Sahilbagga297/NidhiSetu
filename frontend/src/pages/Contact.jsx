@@ -179,17 +179,17 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-20">
+      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-12 sm:py-16 md:py-20">
         <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center bg-blue-700 bg-opacity-50 rounded-full px-6 py-3 text-sm font-medium mb-8"
+              className="inline-flex items-center bg-blue-700 bg-opacity-50 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium mb-6 sm:mb-8"
             >
-              <MessageCircle className="w-5 h-5 mr-2" />
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               24/7 Customer Support Available
             </motion.div>
 
@@ -197,7 +197,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-5xl lg:text-6xl font-bold leading-tight mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6 px-2"
             >
               Get in Touch
               <span className="block text-yellow-400">We're Here to Help</span>
@@ -207,7 +207,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto"
+              className="text-base sm:text-lg md:text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto px-4"
             >
               Have questions about government benefits? Need technical assistance? Our dedicated support team is ready to help you with any queries or concerns.
             </motion.p>
@@ -216,21 +216,21 @@ const Contact = () => {
       </section>
 
       {/* Contact Information Cards */}
-      <section className="py-20 bg-white" data-section="contact-info">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-12 sm:py-16 md:py-20 bg-white" data-section="contact-info">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isVisible['contact-info'] ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-800 mb-6">Multiple Ways to Reach Us</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 px-2">Multiple Ways to Reach Us</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Choose the most convenient way to get in touch with our support team
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={index}
@@ -305,7 +305,7 @@ const Contact = () => {
                       setIsSubmitted(false);
                       setSubmitError('');
                     }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300"
+                    className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3.5 sm:py-3 rounded-lg font-semibold text-base sm:text-sm transition-colors duration-300 touch-manipulation min-h-[44px]"
                   >
                     Send Another Message
                   </button>
@@ -321,7 +321,7 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 text-base"
                         placeholder="Enter your full name"
                       />
                     </div>
@@ -333,7 +333,7 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 text-base"
                         placeholder="Enter your email"
                       />
                     </div>
@@ -408,7 +408,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none flex items-center justify-center"
+                    className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 disabled:transform-none flex items-center justify-center touch-manipulation min-h-[44px]"
                   >
                     {isSubmitting ? (
                       <>
@@ -516,7 +516,7 @@ const Contact = () => {
               >
                 <button
                   onClick={() => toggleFaq(index)}
-                  className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-300"
+                  className="w-full px-4 sm:px-8 py-4 sm:py-6 text-left flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors duration-300 touch-manipulation min-h-[44px]"
                 >
                   <h3 className="text-lg font-semibold text-gray-800 pr-4">{faq.question}</h3>
                   {expandedFaq === index ? (
@@ -573,11 +573,11 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+            <button className="bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-blue-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center touch-manipulation min-h-[44px]">
               <Phone className="w-5 h-5 mr-2" />
               Call Now: 1800-123-4567
             </button>
-            <button className="border-2 border-white hover:bg-white hover:text-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300">
+            <button className="border-2 border-white hover:bg-white hover:text-blue-700 active:bg-white active:text-blue-700 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 touch-manipulation min-h-[44px] flex items-center justify-center">
               <Mail className="w-5 h-5 mr-2" />
               Email Support
             </button>

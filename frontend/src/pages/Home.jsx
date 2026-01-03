@@ -109,9 +109,9 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-20">
+      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-12 sm:py-16 md:py-20">
         <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="inline-flex items-center bg-blue-700 bg-opacity-50 rounded-full px-4 py-2 text-sm font-medium">
@@ -119,26 +119,26 @@ const Home = () => {
                 Secured by Advanced Biometric Technology
               </div>
 
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                 Direct Government
                 <span className="block text-yellow-400">Benefits Platform</span>
               </h1>
 
-              <p className="text-xl text-blue-100 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-blue-100 leading-relaxed">
                 Experience transparent, secure, and efficient distribution of government funds with cutting-edge face recognition technology and fraud prevention systems.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   onClick={() => navigate('/dashboard')}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+                  className="bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-blue-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px] flex items-center justify-center"
                 >
                   Access Your Benefits
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
                 <button
                   onClick={() => navigate('/about')}
-                  className="border-2 border-white hover:bg-white hover:text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300"
+                  className="border-2 border-white hover:bg-white hover:text-blue-900 active:bg-white active:text-blue-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 touch-manipulation min-h-[44px]"
                 >
                   Learn More
                 </button>
@@ -188,18 +188,18 @@ const Home = () => {
       {/* Security Features Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white" data-section="security">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center bg-red-100 text-red-800 rounded-full px-4 py-2 text-sm font-medium mb-4">
-              <Lock className="w-4 h-4 mr-2" />
-              Advanced Security Protocol
+            <div className="text-center mb-12 sm:mb-16">
+              <div className="inline-flex items-center bg-red-100 text-red-800 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium mb-4">
+                <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                Advanced Security Protocol
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 px-2">
+                Revolutionary Security Mechanisms
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+                Our platform employs cutting-edge technology to ensure every rupee reaches the rightful beneficiary while preventing fraud and misuse of government funds.
+              </p>
             </div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-6">
-              Revolutionary Security Mechanisms
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our platform employs cutting-edge technology to ensure every rupee reaches the rightful beneficiary while preventing fraud and misuse of government funds.
-            </p>
-          </div>
 
           <div className={`grid lg:grid-cols-2 xl:grid-cols-4 gap-8 transition-all duration-1000 delay-300 ${isVisible.security ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {securityFeatures.map((feature, index) => (
@@ -268,10 +268,10 @@ const Home = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
                     <button
                       onClick={() => navigate('/about')}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center"
+                      className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-colors duration-300 flex items-center touch-manipulation min-h-[44px]"
                     >
                       Learn More
                       <ArrowRight className="ml-2 w-4 h-4" />
@@ -294,16 +294,16 @@ const Home = () => {
 
             <button
               onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 active:bg-gray-200 p-2.5 sm:p-3 rounded-full shadow-lg transition-all duration-300 active:scale-95 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <ChevronLeft className="w-6 h-6 text-gray-600" />
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
             </button>
 
             <button
               onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 active:bg-gray-200 p-2.5 sm:p-3 rounded-full shadow-lg transition-all duration-300 active:scale-95 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <ChevronRight className="w-6 h-6 text-gray-600" />
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
             </button>
           </div>
         </div>
@@ -363,15 +363,15 @@ const Home = () => {
             Join millions of citizens who trust our secure platform for transparent and efficient government benefit distribution.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <button
               onClick={() => navigate('/verification')}
-              className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+              className="bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-blue-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 transform active:scale-95 touch-manipulation min-h-[44px] flex items-center justify-center"
             >
               <Eye className="w-5 h-5 mr-2" />
               Start Face Verification
             </button>
-            <button className="border-2 border-white hover:bg-white hover:text-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300">
+            <button className="border-2 border-white hover:bg-white hover:text-blue-700 active:bg-white active:text-blue-700 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 touch-manipulation min-h-[44px]">
               Contact Support
             </button>
           </div>

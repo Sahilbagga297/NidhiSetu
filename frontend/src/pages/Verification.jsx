@@ -67,22 +67,22 @@ const Verification = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
-            <Shield className="w-10 h-10 text-blue-600" />
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full mb-4 sm:mb-6">
+            <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 px-2">
             Biometric Verification System
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
             Secure your account with advanced biometric authentication including face recognition, 
             voice verification, and liveness detection.
           </p>
@@ -155,10 +155,11 @@ const Verification = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleOpenBiometricSystem}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:shadow-lg flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 active:from-blue-800 active:to-purple-800 text-white py-3.5 sm:py-4 px-5 sm:px-6 rounded-xl font-semibold text-base sm:text-sm transition-all duration-300 transform active:scale-95 hover:shadow-lg flex items-center justify-center touch-manipulation min-h-[44px]"
                 >
                   <Camera className="w-5 h-5 mr-2" />
-                  Open Biometric Verification System
+                  <span className="hidden sm:inline">Open Biometric Verification System</span>
+                  <span className="sm:hidden">Open Verification</span>
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </motion.button>
 
@@ -167,7 +168,7 @@ const Verification = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleStartVerification}
                   disabled={isVerifying}
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 py-3.5 sm:py-4 px-5 sm:px-6 rounded-xl font-semibold text-base sm:text-sm transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation min-h-[44px]"
                 >
                   {isVerifying ? (
                     <>
