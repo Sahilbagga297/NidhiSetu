@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Eye, 
-  EyeOff, 
-  Shield, 
-  User, 
-  Lock, 
+import {
+  Eye,
+  EyeOff,
+  Shield,
+  User,
+  Lock,
   Mail,
   ArrowRight,
   Zap,
@@ -29,7 +29,7 @@ const NomineeAuth = () => {
     // Login fields
     email: '',
     password: '',
-    
+
     // Signup fields
     name: '',
     confirmPassword: '',
@@ -47,18 +47,18 @@ const NomineeAuth = () => {
     relationWithUser: '',
     userAadharNumber: ''
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
       setFormData({
@@ -82,14 +82,14 @@ const NomineeAuth = () => {
     setLoading(true);
 
     const result = await login(formData.email, formData.password, 'nominee');
-    
+
     if (result.success) {
       // Navigate directly to nominee dashboard
       navigate('/nominee-dashboard');
     } else {
       setError(result.message);
     }
-    
+
     setLoading(false);
   };
 
@@ -134,12 +134,12 @@ const NomineeAuth = () => {
     }
 
     // Validate required fields
-    if (!formData.name || !formData.email || !formData.password || 
-        !formData.address.street || !formData.address.city || 
-        !formData.address.state || !formData.address.pincode ||
-        !formData.aadharNumber || !formData.phoneNumber || 
-        !formData.dateOfBirth || !formData.gender ||
-        !formData.relationWithUser || !formData.userAadharNumber) {
+    if (!formData.name || !formData.email || !formData.password ||
+      !formData.address.street || !formData.address.city ||
+      !formData.address.state || !formData.address.pincode ||
+      !formData.aadharNumber || !formData.phoneNumber ||
+      !formData.dateOfBirth || !formData.gender ||
+      !formData.relationWithUser || !formData.userAadharNumber) {
       setError('All fields are required');
       return;
     }
@@ -149,14 +149,14 @@ const NomineeAuth = () => {
     // Remove confirmPassword from the data sent to backend
     const { confirmPassword, ...signupData } = formData;
     const result = await signup(signupData, 'nominee');
-    
+
     if (result.success) {
       // Navigate directly to nominee dashboard
       navigate('/nominee-dashboard');
     } else {
       setError(result.message);
     }
-    
+
     setLoading(false);
   };
 
@@ -191,7 +191,7 @@ const NomineeAuth = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-start md:items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center">
         {/* Left Column - Auth Form */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-100 relative overflow-hidden">
@@ -200,21 +200,19 @@ const NomineeAuth = () => {
             <div className="bg-gray-100 rounded-full p-1 flex">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isLogin 
-                    ? 'bg-blue-600 text-white shadow-lg' 
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isLogin
+                    ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-gray-600 hover:text-gray-800'
-                }`}
+                  }`}
               >
                 Login
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  !isLogin 
-                    ? 'bg-blue-600 text-white shadow-lg' 
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${!isLogin
+                    ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-gray-600 hover:text-gray-800'
-                }`}
+                  }`}
               >
                 Register
               </button>
@@ -223,10 +221,9 @@ const NomineeAuth = () => {
 
           {/* Form Container with Slider Effect */}
           <div className="relative overflow-hidden">
-            <div 
-              className={`flex transition-transform duration-500 ease-in-out ${
-                isLogin ? 'translate-x-0' : '-translate-x-full'
-              }`}
+            <div
+              className={`flex transition-transform duration-500 ease-in-out ${isLogin ? 'translate-x-0' : '-translate-x-full'
+                }`}
             >
               {/* Login Form */}
               <div className="w-full flex-shrink-0">
@@ -458,7 +455,7 @@ const NomineeAuth = () => {
                       <Users className="w-5 h-5 mr-2 text-green-600" />
                       Nominee Information
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="relationWithUser" className="block text-sm font-medium text-gray-700 mb-2">
@@ -483,7 +480,7 @@ const NomineeAuth = () => {
                           <option value="Other">Other</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="userAadharNumber" className="block text-sm font-medium text-gray-700 mb-2">
                           User's Aadhar Number
@@ -514,7 +511,7 @@ const NomineeAuth = () => {
                       <UserCheck className="w-5 h-5 mr-2 text-blue-600" />
                       Personal Information
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="aadharNumber" className="block text-sm font-medium text-gray-700 mb-2">
@@ -537,7 +534,7 @@ const NomineeAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
                           Phone Number
@@ -559,7 +556,7 @@ const NomineeAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
                           Date of Birth
@@ -579,7 +576,7 @@ const NomineeAuth = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
                           Gender
@@ -607,7 +604,7 @@ const NomineeAuth = () => {
                       <MapPin className="w-5 h-5 mr-2 text-blue-600" />
                       Address Information
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="md:col-span-2">
                         <label htmlFor="address.street" className="block text-sm font-medium text-gray-700 mb-2">
@@ -624,7 +621,7 @@ const NomineeAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.city" className="block text-sm font-medium text-gray-700 mb-2">
                           City
@@ -640,7 +637,7 @@ const NomineeAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.state" className="block text-sm font-medium text-gray-700 mb-2">
                           State
@@ -656,7 +653,7 @@ const NomineeAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.pincode" className="block text-sm font-medium text-gray-700 mb-2">
                           Pincode
@@ -673,7 +670,7 @@ const NomineeAuth = () => {
                           onChange={handleChange}
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="address.country" className="block text-sm font-medium text-gray-700 mb-2">
                           Country

@@ -236,7 +236,7 @@ const UnifiedAuth = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-8 sm:gap-12 items-start lg:items-center">
         {/* Left Column - Auth Form */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 border border-gray-100 relative overflow-hidden max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 border border-gray-100 relative overflow-hidden lg:max-h-[90vh] lg:overflow-y-auto">
           {/* Main User Type Slider */}
           <div className="flex items-center justify-center mb-8">
             <div className="bg-gray-100 rounded-full p-1 flex">

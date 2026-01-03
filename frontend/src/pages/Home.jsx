@@ -171,7 +171,7 @@ const Home = () => {
       {/* Stats Section */}
       <section className="py-16 bg-white" data-section="stats">
         <div className="max-w-7xl mx-auto px-6">
-          <div className={`grid grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ${isVisible.stats ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ${isVisible.stats ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {stats.map((stat, index) => (
               <div key={index} className="text-center group hover:scale-105 transition-transform duration-300">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
@@ -188,20 +188,20 @@ const Home = () => {
       {/* Security Features Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white" data-section="security">
         <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-12 sm:mb-16">
-              <div className="inline-flex items-center bg-red-100 text-red-800 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium mb-4">
-                <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                Advanced Security Protocol
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 px-2">
-                Revolutionary Security Mechanisms
-              </h2>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-                Our platform employs cutting-edge technology to ensure every rupee reaches the rightful beneficiary while preventing fraud and misuse of government funds.
-              </p>
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="inline-flex items-center bg-red-100 text-red-800 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium mb-4">
+              <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+              Advanced Security Protocol
             </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 px-2">
+              Revolutionary Security Mechanisms
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+              Our platform employs cutting-edge technology to ensure every rupee reaches the rightful beneficiary while preventing fraud and misuse of government funds.
+            </p>
+          </div>
 
-          <div className={`grid lg:grid-cols-2 xl:grid-cols-4 gap-8 transition-all duration-1000 delay-300 ${isVisible.security ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 transition-all duration-1000 delay-300 ${isVisible.security ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {securityFeatures.map((feature, index) => (
               <div key={index} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group">
                 <div className="text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">

@@ -631,7 +631,7 @@ const Dashboard = () => {
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full translate-y-12 -translate-x-12"></div>
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <div className="flex items-center">
                   <div className="bg-white bg-opacity-20 p-3 rounded-xl mr-4">
                     <DollarSign className="w-8 h-8 text-white" />
@@ -679,20 +679,20 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <div className="flex items-center space-x-4">
-                  <button
-                    onClick={generateCall}
-                    disabled={isGeneratingCall || !userData?.phoneNumber}
-                    className={`flex items-center space-x-2 px-5 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-200 touch-manipulation min-h-[44px] ${isGeneratingCall || !userData?.phoneNumber
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg active:scale-95'
-                      }`}
-                  >
-                    <PhoneCall className="w-5 h-5" />
-                    <span>
-                      {isGeneratingCall ? 'Generating Call...' : 'Generate Call'}
-                    </span>
-                  </button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <button
+                onClick={generateCall}
+                disabled={isGeneratingCall || !userData?.phoneNumber}
+                className={`flex items-center space-x-2 px-5 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-200 touch-manipulation min-h-[44px] ${isGeneratingCall || !userData?.phoneNumber
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-lg active:scale-95'
+                  }`}
+              >
+                <PhoneCall className="w-5 h-5" />
+                <span>
+                  {isGeneratingCall ? 'Generating Call...' : 'Generate Call'}
+                </span>
+              </button>
 
               {callStatus && (
                 <div className={`px-4 py-2 rounded-lg text-sm ${callStatus.type === 'success'

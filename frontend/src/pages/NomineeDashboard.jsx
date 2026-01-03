@@ -468,25 +468,25 @@ const NomineeDashboard = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-6 gap-4 sm:gap-0">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Nominee Dashboard</h1>
               <p className="text-gray-600 mt-1">Manage your nominee account and linked user information</p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               <div className={`px-3 py-1 rounded-full text-sm font-medium ${nomineeDetails.status === 'Active'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
                 }`}>
                 <CheckCircle className="w-4 h-4 inline mr-1" />
                 {nomineeDetails.status} Nominee
               </div>
               {nomineeDetails.verificationStatus && (
                 <div className={`px-3 py-1 rounded-full text-sm font-medium ${nomineeDetails.verificationStatus === 'Verified'
-                    ? 'bg-blue-100 text-blue-800'
-                    : nomineeDetails.verificationStatus === 'Pending'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                  ? 'bg-blue-100 text-blue-800'
+                  : nomineeDetails.verificationStatus === 'Pending'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-red-100 text-red-800'
                   }`}>
                   {nomineeDetails.verificationStatus}
                 </div>
@@ -555,10 +555,10 @@ const NomineeDashboard = () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className={`p-4 rounded-lg border-2 ${verificationStatus.verificationStatus === 'Verified'
-                        ? 'border-green-200 bg-green-50'
-                        : verificationStatus.verificationStatus === 'Pending'
-                          ? 'border-yellow-200 bg-yellow-50'
-                          : 'border-red-200 bg-red-50'
+                      ? 'border-green-200 bg-green-50'
+                      : verificationStatus.verificationStatus === 'Pending'
+                        ? 'border-yellow-200 bg-yellow-50'
+                        : 'border-red-200 bg-red-50'
                       }`}>
                       <div className="flex items-center">
                         {verificationStatus.verificationStatus === 'Verified' ? (
@@ -575,8 +575,8 @@ const NomineeDashboard = () => {
                     </div>
 
                     <div className={`p-4 rounded-lg border-2 ${verificationStatus.userConfirmed
-                        ? 'border-green-200 bg-green-50'
-                        : 'border-orange-200 bg-orange-50'
+                      ? 'border-green-200 bg-green-50'
+                      : 'border-orange-200 bg-orange-50'
                       }`}>
                       <div className="flex items-center">
                         {verificationStatus.userConfirmed ? (
@@ -667,8 +667,8 @@ const NomineeDashboard = () => {
                   <button
                     onClick={() => setActiveTab('overview')}
                     className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'overview'
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
                   >
                     <Users className="w-4 h-4 inline mr-2" />
@@ -677,8 +677,8 @@ const NomineeDashboard = () => {
                   <button
                     onClick={() => setActiveTab('documents')}
                     className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'documents'
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
                   >
                     <FileText className="w-4 h-4 inline mr-2" />
