@@ -17,7 +17,7 @@ import {
   Globe,
   UserCheck
 } from 'lucide-react';
-import home from '../../public/home.jpg';
+const home = '/home.jpg';
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
