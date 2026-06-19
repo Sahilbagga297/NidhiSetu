@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   // Set up axios defaults
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -31,26 +31,26 @@ export const AuthProvider = ({ children }) => {
   // Check if user is logged in on app start
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      const storedUserType = localStorage.getItem('userType');
-      const storedBiometricEnrolled = localStorage.getItem('biometricEnrolled');
-      const storedFaceVerified = localStorage.getItem('faceVerified');
+      const token = sessionStorage.getItem('token');
+      const storedUserType = sessionStorage.getItem('userType');
+      const storedBiometricEnrolled = sessionStorage.getItem('biometricEnrolled');
+      const storedFaceVerified = sessionStorage.getItem('faceVerified');
 
       if (token) {
         try {
-          // Load user data from localStorage
-          const storedUser = localStorage.getItem('user');
+          // Load user data from sessionStorage
+          const storedUser = sessionStorage.getItem('user');
           const userData = storedUser ? JSON.parse(storedUser) : { token };
           setUser(userData);
           setUserType(storedUserType || 'normal');
           setBiometricEnrolled(storedBiometricEnrolled === 'true');
           setFaceVerified(storedFaceVerified === 'true');
         } catch (error) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userType');
-          localStorage.removeItem('user');
-          localStorage.removeItem('biometricEnrolled');
-          localStorage.removeItem('faceVerified');
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('userType');
+          sessionStorage.removeItem('user');
+          sessionStorage.removeItem('biometricEnrolled');
+          sessionStorage.removeItem('faceVerified');
           delete axios.defaults.headers.common['Authorization'];
         }
       }
@@ -59,9 +59,47 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // Periodically check if the token is deleted from sessionStorage
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const token = sessionStorage.getItem('token');
+      if (!token && user) {
+        logout();
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  // Inactivity timeout of 10 minutes
+  useEffect(() => {
+    if (!user) return;
+
+    let timeoutId;
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        logout();
+      }, 10 * 60 * 1000); // 10 minutes
+    };
+
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    
+    activityEvents.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [user]);
+
   const login = async (email, password, type = 'normal') => {
     try {
-      // Choose the appropriate API endpoint based on user type
       const apiEndpoint = type === 'nominee'
         ? `${API_BASE}/api/nominees/login`
         : `${API_BASE}/api/users/login`;
@@ -72,9 +110,9 @@ export const AuthProvider = ({ children }) => {
       });
 
       const { token, userType: responseUserType, user: userData } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userType', responseUserType || type);
-      localStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userType', responseUserType || type);
+      sessionStorage.setItem('user', JSON.stringify(userData));
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(userData || { token });
       setUserType(responseUserType || type);
@@ -89,7 +127,6 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (formData, type = 'normal') => {
     try {
-      // Choose the appropriate API endpoint based on user type
       const apiEndpoint = type === 'nominee'
         ? `${API_BASE}/api/nominees/register`
         : `${API_BASE}/api/users/register`;
@@ -97,9 +134,9 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(apiEndpoint, formData);
 
       const { token, userType: responseUserType, user: userData } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userType', responseUserType || type);
-      localStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userType', responseUserType || type);
+      sessionStorage.setItem('user', JSON.stringify(userData));
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(userData || { token });
       setUserType(responseUserType || type);
@@ -114,7 +151,6 @@ export const AuthProvider = ({ children }) => {
 
   const getUserProfile = async () => {
     try {
-      // Choose the appropriate API endpoint based on user type
       const apiEndpoint = userType === 'nominee'
         ? `${API_BASE}/api/nominees/profile`
         : `${API_BASE}/api/users/profile`;
@@ -129,13 +165,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Check biometric enrollment status
   const checkBiometricEnrollment = async (userId) => {
     try {
       const response = await axios.get(`${API_BASE}/api/faces/enrollment-status/${userId}`);
       const isEnrolled = response.data.isEnrolled;
       setBiometricEnrolled(isEnrolled);
-      localStorage.setItem('biometricEnrolled', isEnrolled.toString());
+      sessionStorage.setItem('biometricEnrolled', isEnrolled.toString());
       return isEnrolled;
     } catch (error) {
       console.error('Error checking biometric enrollment:', error);
@@ -145,7 +180,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      // Choose the appropriate API endpoint based on user type
       const apiEndpoint = userType === 'nominee'
         ? `${API_BASE}/api/nominees/logout`
         : `${API_BASE}/api/users/logout`;
@@ -154,11 +188,11 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userType');
-      localStorage.removeItem('user');
-      localStorage.removeItem('biometricEnrolled');
-      localStorage.removeItem('faceVerified');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('userType');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('biometricEnrolled');
+      sessionStorage.removeItem('faceVerified');
       delete axios.defaults.headers.common['Authorization'];
       setUser(null);
       setUserType(null);
@@ -167,10 +201,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Function to set face verification status
   const setFaceVerificationStatus = (verified) => {
     setFaceVerified(verified);
-    localStorage.setItem('faceVerified', verified.toString());
+    sessionStorage.setItem('faceVerified', verified.toString());
   };
 
   const value = {

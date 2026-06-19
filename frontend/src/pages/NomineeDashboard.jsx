@@ -48,7 +48,7 @@ const NomineeDashboard = () => {
   // Fetch verification status
   const fetchVerificationStatus = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const response = await axios.get(
         `${API_BASE}/api/nominees/verification-status`,
         {
@@ -74,7 +74,7 @@ const NomineeDashboard = () => {
         setError('');
 
         // Check if user is authenticated
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) {
           setError('Please login to access the dashboard');
           return;
@@ -159,8 +159,8 @@ const NomineeDashboard = () => {
           setError('Session expired. Please login again.');
           // Redirect to login after 3 seconds
           setTimeout(() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('userType');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('userType');
             window.location.href = '/login';
           }, 3000);
         } else {
@@ -213,7 +213,7 @@ const NomineeDashboard = () => {
       formData.append('type', type === 'deathCertificate' ? 'Death Certificate' : 'Medical Document');
 
       // Upload file to backend
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       console.log('🚀 Sending file to backend:', { type, fileName: file.name, fileSize: file.size });
       const response = await axios.post(`${API_BASE}/api/nominees/documents/upload`, formData, {
         headers: {
@@ -267,8 +267,8 @@ const NomineeDashboard = () => {
       if (error.response?.status === 401) {
         setError('Session expired. Please login again.');
         setTimeout(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userType');
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('userType');
           window.location.href = '/login';
         }, 3000);
       } else if (error.response?.status === 413) {
@@ -306,7 +306,7 @@ const NomineeDashboard = () => {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (!token) {
         setError('Please login to delete documents.');
         return;
@@ -351,8 +351,8 @@ const NomineeDashboard = () => {
       if (error.response?.status === 401) {
         setError('Session expired. Please login again.');
         setTimeout(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userType');
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('userType');
           window.location.href = '/login';
         }, 3000);
       } else if (error.response?.status === 404) {

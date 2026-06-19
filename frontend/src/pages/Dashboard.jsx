@@ -171,7 +171,7 @@ const Dashboard = () => {
   // Function to fetch enrolled schemes from backend
   const fetchEnrolledSchemes = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       console.log('Fetching schemes with token:', token ? 'Present' : 'Missing');
 
       const response = await axios.get(`${API_BASE}/api/auth/schemes`, {
@@ -506,7 +506,7 @@ const Dashboard = () => {
     e.preventDefault();
     if (schemeFormData.schemeName && schemeFormData.schemeId && schemeFormData.userUniqueSchemeNumber) {
       try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         console.log('Submitting scheme:', schemeFormData);
         console.log('Token:', token ? 'Present' : 'Missing');
 
