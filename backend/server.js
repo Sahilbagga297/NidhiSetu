@@ -14,7 +14,7 @@ import cors from 'cors';
 const app = express();
 
 // Validate required environment variables
-const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS'];
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'RESEND_API_KEY'];
 const twilioEnvVars = ['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_PHONE_NUMBER'];
 const googleEnvVars = ['GOOGLE_CLOUD_PROJECT_ID', 'GEMINI_API_KEY'];
 
@@ -73,38 +73,38 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Test SMTP endpoint
-app.get('/api/test-smtp', async (req, res) => {
+// Test Resend email endpoint
+app.get('/api/test-email', async (req, res) => {
   try {
-    const nodemailer = await import('nodemailer');
-    
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const { data, error } = await resend.emails.send({
+      from: 'NidhiSetu <onboarding@resend.dev>',
+      to: [process.env.ADMIN_EMAIL || 'sahilbagga297@gmail.com'],
+      subject: 'Test Email - NidhiSetu',
+      html: '<p>This is a test email from NidhiSetu using Resend.</p>',
     });
 
-    // Test connection
-    await transporter.verify();
-    
+    if (error) {
+      console.error('Resend test error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Resend email test failed',
+        error: error.message
+      });
+    }
+
     res.json({
       success: true,
-      message: 'SMTP connection successful',
-      smtpConfig: {
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        user: process.env.SMTP_USER
-      }
+      message: 'Resend email sent successfully',
+      emailId: data.id
     });
   } catch (error) {
-    console.error('SMTP test error:', error);
+    console.error('Email test error:', error);
     res.status(500).json({
       success: false,
-      message: 'SMTP connection failed',
+      message: 'Email test failed',
       error: error.message
     });
   }

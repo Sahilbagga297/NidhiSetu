@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import twilio from 'twilio';
 import Nominee from '../models/Nominee.js';
 import User from '../models/User.js';
@@ -19,31 +19,23 @@ const getTwilioClient = () => {
   return twilioClient;
 };
 
-// Create transporter for sending emails
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: process.env.SMTP_PORT || 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER, // your email
-      pass: process.env.SMTP_PASS, // your email password or app password
-    },
-  });
+// Create Resend client for sending emails
+const getResendClient = () => {
+  return new Resend(process.env.RESEND_API_KEY);
 };
 
 // Send nominee verification email to user
 const sendNomineeVerificationEmail = async (nominee, linkedUser, verificationToken) => {
   try {
-    const transporter = createTransporter();
+    const resend = getResendClient();
     
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const confirmUrl = `${baseUrl}/verify-nominee?token=${verificationToken}&action=confirm`;
     const rejectUrl = `${baseUrl}/verify-nominee?token=${verificationToken}&action=reject`;
     
-    const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: linkedUser.email,
+    const { error } = await resend.emails.send({
+      from: 'NidhiSetu <onboarding@resend.dev>',
+      to: [linkedUser.email],
       subject: `Nominee Registration Request - ${nominee.name} wants to be your nominee`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -131,9 +123,13 @@ const sendNomineeVerificationEmail = async (nominee, linkedUser, verificationTok
           </div>
         </div>
       `
-    };
+    });
     
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('❌ Resend error sending nominee verification email:', error);
+      return false;
+    }
+    
     console.log(`✅ Nominee verification email sent successfully to ${linkedUser.email}`);
     return true;
   } catch (error) {
@@ -219,7 +215,7 @@ const generateNomineeVerificationCall = async (nominee, linkedUser) => {
 // Send document upload notification email to user
 const sendDocumentUploadNotificationToUser = async (nominee, document, linkedUser) => {
   try {
-    const transporter = createTransporter();
+    const resend = getResendClient();
     
     const isMedicalDoc = document.type === 'Medical Document';
     const isDeathCert = document.type === 'Death Certificate';
@@ -244,9 +240,9 @@ const sendDocumentUploadNotificationToUser = async (nominee, document, linkedUse
       actionText = 'A document has been uploaded for your account by your nominee.';
     }
     
-    const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: linkedUser.email,
+    const { error } = await resend.emails.send({
+      from: 'NidhiSetu <onboarding@resend.dev>',
+      to: [linkedUser.email],
       subject: `${document.type} Uploaded by Your Nominee - ${nominee.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -367,9 +363,13 @@ const sendDocumentUploadNotificationToUser = async (nominee, document, linkedUse
           </div>
         </div>
       `
-    };
+    });
     
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('❌ Resend error sending document upload notification:', error);
+      return false;
+    }
+    
     console.log(`✅ Document upload notification email sent successfully to ${linkedUser.email}`);
     return true;
   } catch (error) {
@@ -778,8 +778,8 @@ export const uploadDocument = async (req, res) => {
     if (type === 'Medical Document' || type === 'Death Certificate') {
       console.log(`📧 Attempting to send email for ${type} upload`);
       try {
-        const transporter = createTransporter();
-        console.log('📧 Email transporter created successfully');
+        const resend = getResendClient();
+        console.log('📧 Resend client created successfully');
         
         // Determine email styling based on document type
         const isMedicalDoc = type === 'Medical Document';
@@ -787,11 +787,19 @@ export const uploadDocument = async (req, res) => {
         const alertTitle = isMedicalDoc ? 'Medical Document Upload Alert' : 'Death Certificate Upload Alert';
         const urgencyText = isMedicalDoc ? 'Medical Document' : 'Death Certificate';
         
-        const mailOptions = {
-          from: process.env.SMTP_USER,
-          to: 'setunidhi0@gmail.com', // Target email address
-          subject: `${type} Uploaded - ${nominee.linkedUserDetails.name}`,
-          html: `
+        // Read file for attachment
+        let attachments = [];
+        try {
+          const fileContent = fs.readFileSync(file.path);
+          attachments = [{
+            filename: file.originalname,
+            content: fileContent
+          }];
+        } catch (fileReadError) {
+          console.error('Could not read file for attachment:', fileReadError.message);
+        }
+
+        const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: ${gradientColor}; padding: 20px; text-align: center;">
                 <h1 style="color: white; margin: 0;">${alertTitle}</h1>
@@ -883,24 +891,23 @@ export const uploadDocument = async (req, res) => {
                 <p style="margin: 5px 0 0 0; font-size: 12px;">Time: ${new Date().toLocaleString()}</p>
               </div>
             </div>
-          `,
-          attachments: [
-            {
-              filename: file.originalname,
-              path: file.path,
-              contentType: file.mimetype
-            }
-          ]
-        };
+          `;
 
-        console.log('📧 Sending email with options:', {
-          from: mailOptions.from,
-          to: mailOptions.to,
-          subject: mailOptions.subject
-        });
+        console.log('📧 Sending email via Resend to:', process.env.ADMIN_EMAIL || 'sahilbagga297@gmail.com');
         
-        await transporter.sendMail(mailOptions);
-        console.log(`✅ ${type} email sent successfully to setunidhi0@gmail.com`);
+        const { error: emailErr } = await resend.emails.send({
+          from: 'NidhiSetu <onboarding@resend.dev>',
+          to: [process.env.ADMIN_EMAIL || 'sahilbagga297@gmail.com'],
+          subject: `${type} Uploaded - ${nominee.linkedUserDetails.name}`,
+          html: emailHtml,
+          attachments: attachments
+        });
+
+        if (emailErr) {
+          console.error(`❌ Resend error sending ${type.toLowerCase()} email:`, emailErr);
+        } else {
+          console.log(`✅ ${type} email sent successfully to ${process.env.ADMIN_EMAIL || 'sahilbagga297@gmail.com'}`);
+        }
       } catch (emailError) {
         console.error(`❌ Error sending ${type.toLowerCase()} email:`, emailError.message);
         console.error('Email error details:', {
