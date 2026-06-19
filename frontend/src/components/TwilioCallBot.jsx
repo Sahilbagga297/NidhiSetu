@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const TwilioCallBot = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('Hello! This is a test call from our AI assistant. Please speak after the beep and I will help you with your questions.');
@@ -16,7 +18,7 @@ const TwilioCallBot = () => {
     setStatus(null);
 
     try {
-      const response = await fetch('https://nidhisetu.onrender.com/api/twilio/call', {
+      const response = await fetch(`${API_BASE}/api/twilio/call`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +49,7 @@ const TwilioCallBot = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`https://nidhisetu.onrender.com/api/twilio/call/${callSid}`);
+      const response = await fetch(`${API_BASE}/api/twilio/call/${callSid}`);
       const data = await response.json();
 
       if (data.success) {
@@ -71,7 +73,7 @@ const TwilioCallBot = () => {
     setUserCallStatus(null);
 
     try {
-      const response = await fetch('https://nidhisetu.onrender.com/api/twilio/generate-call', {
+      const response = await fetch(`${API_BASE}/api/twilio/generate-call`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

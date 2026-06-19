@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const Contact = () => {
   const [isVisible, setIsVisible] = useState({});
   const [formData, setFormData] = useState({
@@ -146,7 +148,7 @@ const Contact = () => {
     setSubmitError('');
 
     try {
-      const response = await axios.post('https://nidhisetu.onrender.com/api/contact/send', formData);
+      const response = await axios.post(`${API_BASE}/api/contact/send`, formData);
 
       if (response.data.success) {
         setIsSubmitted(true);

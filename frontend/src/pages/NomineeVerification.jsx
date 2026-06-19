@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const NomineeVerification = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ const NomineeVerification = () => {
     setMessage('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verify`, {
+      const response = await fetch(`${API_BASE}/api/nominees/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

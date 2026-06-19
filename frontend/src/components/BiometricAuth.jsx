@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Square, RotateCcw, CheckCircle, AlertTriangle, Play, Pause, UserPlus, Shield, ArrowLeft } from 'lucide-react';
 import * as faceapi from 'face-api.js';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const BiometricAuth = ({
   mode = 'enroll', // 'enroll' or 'verify'
   onComplete,
@@ -44,7 +46,7 @@ const BiometricAuth = ({
 
     try {
       console.log('🔍 Checking enrollment status for:', userId);
-      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${userId}`);
+      const response = await fetch(`${API_BASE}/api/faces/enrollment-status/${userId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -329,7 +331,7 @@ const BiometricAuth = ({
       }
 
       // Send to backend for storage
-      const response = await fetch('https://nidhisetu.onrender.com/api/faces/enroll', {
+      const response = await fetch(`${API_BASE}/api/faces/enroll`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -370,7 +372,7 @@ const BiometricAuth = ({
 
     try {
       // Get stored face descriptors
-      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/${userId}`);
+      const response = await fetch(`${API_BASE}/api/faces/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch stored faces');
       }

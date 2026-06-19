@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 import {
   User,
   Shield,
@@ -47,7 +50,7 @@ const NomineeDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verification-status`,
+        `${API_BASE}/api/nominees/verification-status`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -79,13 +82,13 @@ const NomineeDashboard = () => {
 
         // Fetch both profile and verification status
         const [profileResponse, verificationResponse] = await Promise.all([
-          axios.get('https://nidhisetu.onrender.com/api/nominees/profile', {
+          axios.get(`${API_BASE}/api/nominees/profile`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }),
           axios.get(
-            `${import.meta.env.VITE_API_URL || 'https://nidhisetu.onrender.com'}/api/nominees/verification-status`,
+            `${API_BASE}/api/nominees/verification-status`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -212,7 +215,7 @@ const NomineeDashboard = () => {
       // Upload file to backend
       const token = localStorage.getItem('token');
       console.log('🚀 Sending file to backend:', { type, fileName: file.name, fileSize: file.size });
-      const response = await axios.post('https://nidhisetu.onrender.com/api/nominees/documents/upload', formData, {
+      const response = await axios.post(`${API_BASE}/api/nominees/documents/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -312,7 +315,7 @@ const NomineeDashboard = () => {
       console.log('Deleting document:', { type, fileId });
 
       // Call API to delete document
-      const response = await axios.delete(`https://nidhisetu.onrender.com/api/nominees/documents/${fileId}`, {
+      const response = await axios.delete(`${API_BASE}/api/nominees/documents/${fileId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

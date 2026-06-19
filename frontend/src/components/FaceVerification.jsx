@@ -4,6 +4,8 @@ import * as faceapi from 'face-api.js';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCancel, onVerificationSuccess }) => {
   const [isActive, setIsActive] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('idle');
@@ -59,7 +61,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
   // Check if user is already enrolled
   const checkEnrollmentStatus = async () => {
     try {
-      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${user.id}`);
+      const response = await fetch(`${API_BASE}/api/faces/enrollment-status/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setIsEnrolled(data.isEnrolled);
@@ -220,7 +222,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
       }
 
       // Send to backend for storage
-      const response = await fetch('https://nidhisetu.onrender.com/api/faces/enroll', {
+      const response = await fetch(`${API_BASE}/api/faces/enroll`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -270,7 +272,7 @@ const FaceVerification = ({ user, setUser, onEnrollmentComplete, onEnrollmentCan
 
     try {
       // Get stored face descriptors
-      const response = await fetch(`https://nidhisetu.onrender.com/api/faces/${user.id}`);
+      const response = await fetch(`${API_BASE}/api/faces/${user.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch stored faces');
       }

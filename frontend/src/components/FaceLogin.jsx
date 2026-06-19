@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Square, RotateCcw, CheckCircle, AlertTriangle, Play, Pause, Shield } from 'lucide-react';
 import * as faceapi from 'face-api.js';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
   const [isActive, setIsActive] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('idle');
@@ -151,7 +153,7 @@ const FaceLogin = ({ onLoginSuccess, onBackToPassword }) => {
       setVerificationProgress(50);
 
       // Send face descriptor for login verification
-      const response = await fetch('https://nidhisetu.onrender.com/api/faces/login', {
+      const response = await fetch(`${API_BASE}/api/faces/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

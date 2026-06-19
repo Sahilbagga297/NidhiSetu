@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_BASE = process.env.API_base;
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -61,8 +63,8 @@ export const AuthProvider = ({ children }) => {
     try {
       // Choose the appropriate API endpoint based on user type
       const apiEndpoint = type === 'nominee'
-        ? 'https://nidhisetu.onrender.com/api/nominees/login'
-        : 'https://nidhisetu.onrender.com/api/users/login';
+        ? `${API_BASE}/api/nominees/login`
+        : `${API_BASE}/api/users/login`;
 
       const response = await axios.post(apiEndpoint, {
         email,
@@ -89,8 +91,8 @@ export const AuthProvider = ({ children }) => {
     try {
       // Choose the appropriate API endpoint based on user type
       const apiEndpoint = type === 'nominee'
-        ? 'https://nidhisetu.onrender.com/api/nominees/register'
-        : 'https://nidhisetu.onrender.com/api/users/register';
+        ? `${API_BASE}/api/nominees/register`
+        : `${API_BASE}/api/users/register`;
 
       const response = await axios.post(apiEndpoint, formData);
 
@@ -114,8 +116,8 @@ export const AuthProvider = ({ children }) => {
     try {
       // Choose the appropriate API endpoint based on user type
       const apiEndpoint = userType === 'nominee'
-        ? 'https://nidhisetu.onrender.com/api/nominees/profile'
-        : 'https://nidhisetu.onrender.com/api/users/profile';
+        ? `${API_BASE}/api/nominees/profile`
+        : `${API_BASE}/api/users/profile`;
 
       const response = await axios.get(apiEndpoint);
       return { success: true, user: response.data.user || response.data.nominee };
@@ -130,7 +132,7 @@ export const AuthProvider = ({ children }) => {
   // Check biometric enrollment status
   const checkBiometricEnrollment = async (userId) => {
     try {
-      const response = await axios.get(`https://nidhisetu.onrender.com/api/faces/enrollment-status/${userId}`);
+      const response = await axios.get(`${API_BASE}/api/faces/enrollment-status/${userId}`);
       const isEnrolled = response.data.isEnrolled;
       setBiometricEnrolled(isEnrolled);
       localStorage.setItem('biometricEnrolled', isEnrolled.toString());
@@ -145,8 +147,8 @@ export const AuthProvider = ({ children }) => {
     try {
       // Choose the appropriate API endpoint based on user type
       const apiEndpoint = userType === 'nominee'
-        ? 'https://nidhisetu.onrender.com/api/nominees/logout'
-        : 'https://nidhisetu.onrender.com/api/users/logout';
+        ? `${API_BASE}/api/nominees/logout`
+        : `${API_BASE}/api/users/logout`;
 
       await axios.post(apiEndpoint);
     } catch (error) {

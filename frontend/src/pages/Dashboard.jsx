@@ -30,6 +30,8 @@ import { useNavigate } from 'react-router-dom';
 import AccountsModal from '../components/AccountsModal';
 import axios from 'axios';
 
+const API_BASE = process.env.API_base || 'http://localhost:5000';
+
 // Mock data - would be replaced with actual API calls
 const mockUserData = {
   fullName: "Sahil bagga",
@@ -172,7 +174,7 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       console.log('Fetching schemes with token:', token ? 'Present' : 'Missing');
 
-      const response = await axios.get('https://nidhisetu.onrender.com/api/auth/schemes', {
+      const response = await axios.get(`${API_BASE}/api/auth/schemes`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -508,7 +510,7 @@ const Dashboard = () => {
         console.log('Submitting scheme:', schemeFormData);
         console.log('Token:', token ? 'Present' : 'Missing');
 
-        const response = await axios.post('https://nidhisetu.onrender.com/api/auth/schemes', {
+        const response = await axios.post(`${API_BASE}/api/auth/schemes`, {
           schemeName: schemeFormData.schemeName,
           schemeId: schemeFormData.schemeId,
           userUniqueSchemeNumber: schemeFormData.userUniqueSchemeNumber
@@ -558,7 +560,7 @@ const Dashboard = () => {
     setCallStatus(null);
 
     try {
-      const response = await axios.post('https://nidhisetu.onrender.com/api/twilio/generate-call', {
+      const response = await axios.post(`${API_BASE}/api/twilio/generate-call`, {
         phoneNumber: userData.phoneNumber,
         userName: userData.fullName
       });
