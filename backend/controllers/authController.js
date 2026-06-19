@@ -38,6 +38,11 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    // Validate password length
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters long" });
+    }
+
     // Validate address object
     if (!address.street || !address.city || !address.state || !address.pincode) {
       return res.status(400).json({ message: "Complete address information is required" });
@@ -123,6 +128,7 @@ export const login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
